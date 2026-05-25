@@ -94,14 +94,11 @@
 
 Tạo **3 file CSV** chuẩn bị cho phân tích tiếp theo:
 
-| File                     | Mục Đích                               | Rows   |
-| ------------------------ | -------------------------------------- | ------ |
-| **data_journeys.csv**    | Dữ liệu được gộp lại theo cấp độ Người dùng (mỗi dòng là toàn bộ hành trình của 1 khách). 
-<br><br>Mục đích: Dùng để vẽ các Sơ đồ luồng (Sankey Diagram), tìm hiểu khách hàng thường đi theo trình tự nào trước khi trả tiền.       | 2,847  |
-| **data_touchpoints.csv** |  Dữ liệu chi tiết từng điểm chạm nhưng được tính sẵn điểm tín dụng dùng cho First-touch, Last-touch, và Linear trọng số. 
-<br><br>Mục đích: Là nguồn Data chính dùng để vẽ Biểu đồ Attribution (Attribution Bar Chart) nhằm phân bổ phần trăm ngân sách. | 10,000 |
-| **data_encoded.csv**     | Dữ liệu điểm chạm đã được số hóa mã nhị phân (One-hot Encoding). Nhằm biến chữ (tên kênh) thành các con số 1 và 0. 
-<br><br>Mục đích: Dùng riêng để huấn luyện mô hình Logistic Regression (trả lời cho bộ câu hỏi RQ2) do thuật toán Data Science chỉ có thể hiểu những con số. | 10,000 |
+| File | Mục Đích | Rows |
+|---|---|---|
+| **data_journeys.csv** | Dữ liệu được gộp lại theo cấp độ Người dùng (mỗi dòng là toàn bộ hành trình của 1 khách).<br><br><strong>Mục đích:</strong> Dùng để vẽ các Sơ đồ luồng (Sankey Diagram), tìm hiểu khách hàng thường đi theo trình tự nào trước khi trả tiền. | 2,847 |
+| **data_touchpoints.csv** | Dữ liệu chi tiết từng điểm chạm nhưng được tính sẵn điểm tín dụng dùng cho First-touch, Last-touch, và Linear trọng số.<br><br><strong>Mục đích:</strong> Là nguồn Data chính dùng để vẽ Biểu đồ Attribution (Attribution Bar Chart) nhằm phân bổ phần trăm ngân sách. | 10,000 |
+| **data_encoded.csv** | Dữ liệu điểm chạm đã được số hóa mã nhị phân (One-hot Encoding). Nhằm biến chữ (tên kênh) thành các con số 1 và 0.<br><br><strong>Mục đích:</strong> Dùng riêng để huấn luyện mô hình Logistic Regression (trả lời cho bộ câu hỏi RQ2) do thuật toán Data Science chỉ có thể hiểu những con số. | 10,000 |
 
 ---
 
