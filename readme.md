@@ -1,33 +1,3 @@
-Tôi sẽ thực hiện phần 4 "Data Collection, Understanding, Preparation" cho bạn. Trước tiên, hãy để tôi kiểm tra các file hiện có.
-
-Read [](file:///d%3A/My%20document/DAP391m/Social-Media-Campaign-Attribution-for-E-commerce-Sales/data_cleaning.py)
-
-Read [](file:///d%3A/My%20document/DAP391m/Social-Media-Campaign-Attribution-for-E-commerce-Sales/multi_touch_attribution_data.csv#1-1), lines 1 to 20
-
-Created [](file:///d%3A/My%20document/DAP391m/Social-Media-Campaign-Attribution-for-E-commerce-Sales/data_cleaning.py)
-
-Bây giờ hãy để tôi chạy script để xem kết quả:
-
-Ran terminal command: cd "d:\My document\DAP391m\Social-Media-Campaign-Attribution-for-E-commerce-Sales" ; python data_cleaning.py
-Completed with input: cd "d:\My document\DAP391m\Social-Media-Campaign-Attribution-for-E-commerce-Sales" ; python data_cleaning.py
-
-Replacing 4 lines with 4 lines in [](file:///d%3A/My%20document/DAP391m/Social-Media-Campaign-Attribution-for-E-commerce-Sales/data_cleaning.py)
-
-```
-```
-
-Ran terminal command: cd "d:\My document\DAP391m\Social-Media-Campaign-Attribution-for-E-commerce-Sales" ; python data_cleaning.py
-
-Read [](file:///c%3A/Users/lamhu/AppData/Roaming/Code/User/workspaceStorage/41ef08ff41762aa6fb904d1755596ecf/GitHub.copilot-chat/chat-session-resources/2097d0df-dc34-462b-a2aa-a47d150447c4/toolu_bdrk_01LaWLbqPWCE1ip6BCdmNfTB__vscode-1779690940653/content.txt#1-1), lines 1 to 200
-
-Read [](file:///c%3A/Users/lamhu/AppData/Roaming/Code/User/workspaceStorage/41ef08ff41762aa6fb904d1755596ecf/GitHub.copilot-chat/chat-session-resources/2097d0df-dc34-462b-a2aa-a47d150447c4/toolu_bdrk_01LaWLbqPWCE1ip6BCdmNfTB__vscode-1779690940653/content.txt#200-200), lines 200 to 288
-
-Perfect! Script đã hoàn thành thành công. Hãy để tôi kiểm tra các file đã được tạo:
-
-Read [](file:///d%3A/My%20document/DAP391m/Social-Media-Campaign-Attribution-for-E-commerce-Sales)
-
-Xuất sắc! Phần 4 **Data Collection, Understanding & Preparation** đã hoàn thành 100%. Dưới đây là tóm tắt chi tiết:
-
 ## KỸ THUẬT LÀM SẠCH VÀ CHUẨN BỊ DỮ LIỆU
 
 ### Bước 1: Load & Clean (Tải & Làm Sạch)
