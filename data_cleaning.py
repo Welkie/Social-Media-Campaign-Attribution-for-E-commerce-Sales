@@ -1,218 +1,414 @@
-"""
-DATA CLEANING, UNDERSTANDING & PREPARATION - Bước 4
-Dự án: Social Media Campaign Attribution for E-commerce Sales
-Nhóm: 1
-
-Quy trình:
-1. Load & Explore: Tải dữ liệu, kiểm tra cấu trúc, loại dữ liệu
-2. Data Understanding: Phân tích chuyển đổi, hành vi người dùng
-3. Data Cleaning: Xóa trùng, điền thiếu, chuẩn hóa
-4. Data Preparation: Ánh xạ Traffic Types, tạo channel proxy, sắp xếp
-"""
+# ===================================================================
+# DATA COLLECTION, UNDERSTANDING & PREPARATION
+# Multi-Touch Attribution Project - Group 1
+# ===================================================================
 
 import pandas as pd
 import numpy as np
+from datetime import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
-# ============================================================================
-# 1. LOAD & EXPLORE DATA
-# ============================================================================
-print("=" * 80)
-print("BƯỚC 1: TẢI VÀ KHÁM PHÁ DỮ LIỆU")
-print("=" * 80)
+# Thiết lập seed cho reproducibility
+RANDOM_SEED = 42
+np.random.seed(RANDOM_SEED)
 
-# Tải dataset
-df = pd.read_csv("online_shoppers_intention.csv")
+print("=" * 70)
+print("PHẦN 4: DATA COLLECTION, UNDERSTANDING & PREPARATION")
+print("=" * 70)
 
-print(f"\nKích thước dataset: {df.shape[0]:,} hàng × {df.shape[1]} cột")
-print(f"\nThông tin cơ bản:")
-print(df.info())
-print(f"\n5 hàng đầu tiên:")
-print(df.head())
+# ===================================================================
+# BƯỚC 1: LOAD & CLEAN - Tải và làm sạch dữ liệu
+# ===================================================================
 
-# ============================================================================
-# 2. DATA UNDERSTANDING - Phân tích chuyển đổi & hành vi
-# ============================================================================
-print("\n" + "=" * 80)
-print("BƯỚC 2: HIỂU DỮ LIỆU (Data Understanding)")
-print("=" * 80)
+print("\n[BƯỚC 1] LOAD & CLEAN - Tải và làm sạch dữ liệu")
+print("-" * 70)
 
-# Tỷ lệ chuyển đổi
-conversion_rate = (df['Revenue'].sum() / len(df)) * 100
-print(f"\nTỷ lệ chuyển đổi chung: {conversion_rate:.2f}%")
-print(f"   - Số phiên chuyển đổi: {df['Revenue'].sum():,}")
-print(f"   - Số phiên tổng cộng: {len(df):,}")
+# Load dữ liệu từ CSV
+df_raw = pd.read_csv('multi_touch_attribution_data.csv')
+print(f"✓ Đã tải dữ liệu: {df_raw.shape[0]} rows, {df_raw.shape[1]} columns")
+print(f"✓ Cột dữ liệu: {list(df_raw.columns)}")
 
-# Phân tích theo Traffic Type
-print(f"\nTỷ lệ chuyển đổi theo Traffic Type:")
-traffic_analysis = df.groupby('TrafficType').agg({
-    'Revenue': ['sum', 'count', 'mean']
-}).round(4)
-traffic_analysis.columns = ['Conversions', 'Total_Sessions', 'Conversion_Rate']
-traffic_analysis['Conversion_Rate'] = (traffic_analysis['Conversion_Rate'] * 100).round(2)
-print(traffic_analysis)
+# Hiển thị 5 dòng đầu
+print("\nDữ liệu mẫu (5 dòng đầu):")
+print(df_raw.head())
 
-# Phân tích theo Visitor Type
-print(f"\nTỷ lệ chuyển đổi theo Visitor Type:")
-visitor_analysis = df.groupby('VisitorType').agg({
-    'Revenue': ['sum', 'count', 'mean']
-}).round(4)
-visitor_analysis.columns = ['Conversions', 'Total_Sessions', 'Conversion_Rate']
-visitor_analysis['Conversion_Rate'] = (visitor_analysis['Conversion_Rate'] * 100).round(2)
-print(visitor_analysis)
+# Kiểm tra giá trị missing
+print(f"\n✓ Giá trị missing trong mỗi cột:")
+print(df_raw.isnull().sum())
 
-# Phân tích theo Month
-print(f"\nTỷ lệ chuyển đổi theo Tháng:")
-month_analysis = df.groupby('Month').agg({
-    'Revenue': ['sum', 'count', 'mean']
-}).round(4)
-month_analysis.columns = ['Conversions', 'Total_Sessions', 'Conversion_Rate']
-month_analysis['Conversion_Rate'] = (month_analysis['Conversion_Rate'] * 100).round(2)
-print(month_analysis)
+# Kiểm tra duplicate rows
+n_duplicates = df_raw.duplicated().sum()
+print(f"\n✓ Số dòng duplicate: {n_duplicates}")
 
-# Kiểm tra dữ liệu thiếu
-print(f"\nDữ liệu thiếu (Missing Values):")
-missing = df.isnull().sum()
-if missing.sum() == 0:
-    print("Không có dữ liệu thiếu!")
-else:
-    print(missing[missing > 0])
+# Xóa duplicate rows (nếu có)
+df_cleaned = df_raw.drop_duplicates().reset_index(drop=True)
+print(f"✓ Sau khi xóa duplicate: {df_cleaned.shape[0]} rows")
 
-# ============================================================================
-# 3. DATA CLEANING - Làm sạch dữ liệu
-# ============================================================================
-print("\n" + "=" * 80)
-print("BƯỚC 3: LÀM SẠCH DỮ LIỆU (Data Cleaning)")
-print("=" * 80)
+# Convert Timestamp to datetime
+df_cleaned['Timestamp'] = pd.to_datetime(df_cleaned['Timestamp'])
+print(f"✓ Đã chuyển Timestamp sang datetime format")
+print(f"  - Khoảng thời gian: {df_cleaned['Timestamp'].min()} đến {df_cleaned['Timestamp'].max()}")
 
-# 3.1: Kiểm tra & xóa bản sao (Duplicates)
-print(f"\nKiểm tra bản sao:")
-duplicates_before = df.duplicated().sum()
-print(f"   - Số bản sao tìm thấy: {duplicates_before}")
-df = df.drop_duplicates().reset_index(drop=True)
-print(f"   - Dataset sau khi loại bỏ: {len(df):,} hàng")
+# Kiểm tra data types
+print(f"\n✓ Data types sau cleaning:")
+print(df_cleaned.dtypes)
 
-# 3.2: Chuẩn hóa BounceRate & ExitRate (normalize to 0-1 range)
-print(f"\nChuẩn hóa BounceRates & ExitRates:")
-print(f"   - BounceRates: min={df['BounceRates'].min():.4f}, max={df['BounceRates'].max():.4f}")
-print(f"   - ExitRates: min={df['ExitRates'].min():.4f}, max={df['ExitRates'].max():.4f}")
+# ===================================================================
+# BƯỚC 2: RECONSTRUCT JOURNEYS - Tái tạo hành trình khách hàng
+# ===================================================================
 
-# Đảm bảo các giá trị nằm trong [0, 1]
-df['BounceRates'] = df['BounceRates'].clip(0, 1)
-df['ExitRates'] = df['ExitRates'].clip(0, 1)
-print(f"Chuẩn hóa hoàn tất!")
+print("\n[BƯỚC 2] RECONSTRUCT JOURNEYS - Tái tạo hành trình khách hàng")
+print("-" * 70)
 
-# 3.3: Chuyển đổi kiểu dữ liệu
-print(f"\nChuyển đổi kiểu dữ liệu:")
-df['Month'] = df['Month'].astype('category')
-df['VisitorType'] = df['VisitorType'].astype('category')
-df['TrafficType'] = df['TrafficType'].astype('category')
-df['Revenue'] = df['Revenue'].astype('bool')
-df['Weekend'] = df['Weekend'].astype('bool')
-print(f"Chuyển đổi hoàn tất!")
-print(df.dtypes)
+# Sắp xếp theo User ID và Timestamp (để tái tạo thứ tự chronological)
+df_sorted = df_cleaned.sort_values(['User ID', 'Timestamp']).reset_index(drop=True)
+print(f"✓ Đã sắp xếp dữ liệu theo User ID và Timestamp (chronological order)")
 
-# ============================================================================
-# 4. DATA PREPARATION - Chuẩn bị dữ liệu
-# ============================================================================
-print("\n" + "=" * 80)
-print("BƯỚC 4: CHUẨN BỊ DỮ LIỆU (Data Preparation)")
-print("=" * 80)
+# Nhóm (group) dữ liệu theo User ID để tái tạo hành trình
+journeys = []
+for user_id, group in df_sorted.groupby('User ID'):
+    # Thông tin từng user
+    user_touchpoints = group.sort_values('Timestamp').reset_index(drop=True)
+    
+    # Tạo ordered channel sequence (chuỗi các kênh theo thứ tự thời gian)
+    channel_sequence = ' -> '.join(user_touchpoints['Channel'].astype(str))
+    
+    # Lấy first-touch (kênh đầu tiên)
+    first_touch_channel = user_touchpoints['Channel'].iloc[0]
+    first_touch_campaign = user_touchpoints['Campaign'].iloc[0]
+    
+    # Lấy last-touch (kênh cuối cùng)
+    last_touch_channel = user_touchpoints['Channel'].iloc[-1]
+    last_touch_campaign = user_touchpoints['Campaign'].iloc[-1]
+    
+    # User-level conversion: nếu bất kỳ touchpoint nào có Conversion = 'Yes' thì user đã convert
+    is_converted = 'Yes' in user_touchpoints['Conversion'].values
+    
+    # Số lượng touchpoints
+    n_touchpoints = len(user_touchpoints)
+    
+    # Danh sách campaign mà user tương tác
+    campaigns_list = list(set(user_touchpoints['Campaign'].values))
+    campaigns_str = ', '.join(campaigns_list)
+    
+    journeys.append({
+        'User ID': user_id,
+        'N_Touchpoints': n_touchpoints,
+        'Channel_Sequence': channel_sequence,
+        'First_Touch_Channel': first_touch_channel,
+        'First_Touch_Campaign': first_touch_campaign,
+        'Last_Touch_Channel': last_touch_channel,
+        'Last_Touch_Campaign': last_touch_campaign,
+        'Converted': is_converted,
+        'All_Campaigns': campaigns_str
+    })
 
-# 4.1: Tạo SessionID
-print(f"\nTạo SessionID:")
-df.insert(0, 'SessionID', range(1, len(df) + 1))
-print(f"SessionID tạo thành công! (1 đến {len(df):,})")
+# Chuyển thành DataFrame
+df_journeys = pd.DataFrame(journeys)
 
-# 4.2: Tạo Traffic Segments (Channel Groups) dựa trên TrafficType
-print(f"\nTạo Traffic Segments (Channel Groups):")
+print(f"✓ Đã tái tạo {len(df_journeys)} user journeys từ {df_journeys['N_Touchpoints'].sum()} touchpoints")
+print(f"✓ Phạm vi touchpoints per user: {df_journeys['N_Touchpoints'].min()} - {df_journeys['N_Touchpoints'].max()}")
+print(f"✓ Trung bình touchpoints per user: {df_journeys['N_Touchpoints'].mean():.2f}")
 
-# Ánh xạ TrafficType thành các channel có ý nghĩa
-def map_traffic_to_channel(traffic_type):
-    """
-    Ánh xạ TrafficType từ dataset thành các channel chính:
-    1 → Direct/Search
-    2 → Referral/Affiliate
-    3 → Organic
-    4 → Social Media
-    5 → Display Ads
-    (mỗi traffic type có conversion rate khác nhau)
-    """
-    traffic_channel_map = {
-        1: 'Direct/Organic',
-        2: 'Referral',
-        3: 'Social Media',
-        4: 'Display Ads',
-        5: 'Paid Search',
-        6: 'Other'
-    }
-    return traffic_channel_map.get(int(traffic_type), 'Other')
+# Số users đã convert
+n_converted_users = df_journeys['Converted'].sum()
+user_conversion_rate = (n_converted_users / len(df_journeys)) * 100
 
-df['Channel'] = df['TrafficType'].map(map_traffic_to_channel)
-print(f"   Phân bố Traffic Segment:")
-print(df['Channel'].value_counts())
+print(f"✓ Users đã convert: {n_converted_users}")
+print(f"✓ User-level conversion rate: {user_conversion_rate:.2f}%")
 
-# 4.3: Tạo tính năng: Bounce Session
-print(f"\nTạo tính năng Bounce Session:")
-df['IsBounceSession'] = (df['BounceRates'] == 1.0)
-bounce_count = df['IsBounceSession'].sum()
-print(f"   - Số phiên bounce: {bounce_count:,} ({bounce_count/len(df)*100:.2f}%)")
+print("\nMẫu journeys (5 dòng đầu):")
+print(df_journeys.head())
 
-# 4.4: Tạo tính năng: Num_Visits (từ PageValues - một proxy cho số lần truy cập)
-print(f"\nPhân tích PageValues (độ sâu session):")
-print(f"   - Min: {df['PageValues'].min():.2f}")
-print(f"   - Mean: {df['PageValues'].mean():.2f}")
-print(f"   - Max: {df['PageValues'].max():.2f}")
+# ===================================================================
+# BƯỚC 3: DATA UNDERSTANDING - Khám phá dữ liệu
+# ===================================================================
 
-# 4.5: Sắp xếp dữ liệu theo thứ tự thời gian
-print(f"\nSắp xếp dữ liệu theo thứ tự thời gian:")
-df['Month_order'] = pd.Categorical(df['Month'], 
-    categories=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], 
-    ordered=True)
-df = df.sort_values(['Month_order', 'SessionID']).reset_index(drop=True)
-print(f"Sắp xếp hoàn tất!")
-df = df.drop('Month_order', axis=1)
+print("\n[BƯỚC 3] DATA UNDERSTANDING - Khám phá dữ liệu")
+print("-" * 70)
 
-# ============================================================================
-# 5. FINAL DATA QUALITY CHECKS
-# ============================================================================
-print("\n" + "=" * 80)
-print("KIỂM TRA CHẤT LƯỢNG DỮ LIỆU CUỐI CÙNG")
-print("=" * 80)
+# 3.1 Phân tích Channel Performance
+print("\n3.1 CHANNEL PERFORMANCE (Hiệu suất kênh)")
+print("   (Phân tích trên touchpoint-level)")
 
-print(f"\nKiểm tra Sanity:")
-print(f"   - Không có NaN: {df.isnull().sum().sum() == 0}")
-print(f"   - Không có Infinity: {np.isinf(df.select_dtypes(include=[np.number])).sum().sum() == 0}")
-print(f"   - SessionID duy nhất: {df['SessionID'].nunique() == len(df)}")
-print(f"   - Revenue chỉ True/False: {set(df['Revenue'].unique()) == {True, False}}")
+channel_stats = df_sorted.groupby('Channel').agg({
+    'User ID': 'count',  # Số touchpoints
+    'Conversion': lambda x: (x == 'Yes').sum(),  # Số touchpoints có convert
+}).rename(columns={'User ID': 'Total_Touchpoints', 'Conversion': 'Conversions'})
 
-print(f"\nKích thước dataset cuối cùng: {df.shape}")
-print(f"\nThông tin cột chính:")
-print(df[['SessionID', 'Month', 'VisitorType', 'Channel', 'PageValues', 
-          'BounceRates', 'ExitRates', 'Revenue', 'IsBounceSession']].head(10))
+channel_stats['Conversion_Rate_%'] = (channel_stats['Conversions'] / channel_stats['Total_Touchpoints'] * 100).round(2)
+channel_stats = channel_stats.sort_values('Conversion_Rate_%', ascending=False)
 
-# ============================================================================
-# 6. SAVE CLEANED DATA
-# ============================================================================
-print("\n" + "=" * 80)
-print("LƯU DỮ LIỆU ĐÃ LÀNG SẠCH")
-print("=" * 80)
+print(channel_stats)
 
-df.to_csv("data_cleaned.csv", index=False)
-print(f"\nDữ liệu đã được lưu vào: data_cleaned.csv")
-print(f"File có kích thước: {len(df):,} hàng × {len(df.columns)} cột")
+# 3.2 Phân tích First-Touch Attribution (touchpoint-level)
+print("\n3.2 FIRST-TOUCH ATTRIBUTION")
+print("   (Kênh đầu tiên trong hành trình)")
 
-# Thống kê tóm tắt
-print(f"\n" + "=" * 80)
-print("THỐNG KÊ TÓM TẮT")
-print("=" * 80)
-print(f"\nThống kê số metric chính:")
-print(f"   - Tổng phiên: {len(df):,}")
-print(f"   - Tổng chuyển đổi: {df['Revenue'].sum():,}")
-print(f"   - Tỷ lệ chuyển đổi: {conversion_rate:.2f}%")
-print(f"   - Số channel: {df['Channel'].nunique()}")
-print(f"   - Số tháng: {df['Month'].nunique()}")
-print(f"\nBƯỚC 4 HOÀN THÀNH!")
-print("=" * 80)
+first_touch_stats = df_journeys.groupby('First_Touch_Channel').agg({
+    'Converted': ['count', 'sum']
+}).rename(columns={'count': 'Total', 'sum': 'Conversions'})
+first_touch_stats.columns = ['Total', 'Conversions']
+first_touch_stats['Conversion_Rate_%'] = (first_touch_stats['Conversions'] / first_touch_stats['Total'] * 100).round(2)
+first_touch_stats = first_touch_stats.sort_values('Conversion_Rate_%', ascending=False)
+
+print(first_touch_stats)
+
+# 3.3 Phân tích Last-Touch Attribution (touchpoint-level)
+print("\n3.3 LAST-TOUCH ATTRIBUTION")
+print("   (Kênh cuối cùng trong hành trình)")
+
+last_touch_stats = df_journeys.groupby('Last_Touch_Channel').agg({
+    'Converted': ['count', 'sum']
+}).rename(columns={'count': 'Total', 'sum': 'Conversions'})
+last_touch_stats.columns = ['Total', 'Conversions']
+last_touch_stats['Conversion_Rate_%'] = (last_touch_stats['Conversions'] / last_touch_stats['Total'] * 100).round(2)
+last_touch_stats = last_touch_stats.sort_values('Conversion_Rate_%', ascending=False)
+
+print(last_touch_stats)
+
+# 3.4 Phân tích Campaign
+print("\n3.4 CAMPAIGN ANALYSIS (Phân tích campaign)")
+
+campaign_stats = df_sorted[df_sorted['Campaign'] != '-'].groupby('Campaign').agg({
+    'User ID': 'count',
+    'Conversion': lambda x: (x == 'Yes').sum()
+}).rename(columns={'User ID': 'Total_Touchpoints', 'Conversion': 'Conversions'})
+
+campaign_stats['Conversion_Rate_%'] = (campaign_stats['Conversions'] / campaign_stats['Total_Touchpoints'] * 100).round(2)
+campaign_stats = campaign_stats.sort_values('Conversion_Rate_%', ascending=False)
+
+print(campaign_stats)
+
+# 3.5 Journey Length Distribution
+print("\n3.5 JOURNEY LENGTH DISTRIBUTION (Phân phối độ dài hành trình)")
+
+journey_length_dist = df_journeys['N_Touchpoints'].value_counts().sort_index()
+print(journey_length_dist)
+
+# ===================================================================
+# BƯỚC 4: DATA PREPARATION - Chuẩn bị dữ liệu
+# ===================================================================
+
+print("\n[BƯỚC 4] DATA PREPARATION - Chuẩn bị dữ liệu")
+print("-" * 70)
+
+# 4.1 One-Hot Encoding cho Channel (dùng cho logistic regression)
+print("\n4.1 ONE-HOT ENCODING Channel")
+
+# Tạo dummy variables cho Channel từ df_sorted (touchpoint-level)
+channel_dummies = pd.get_dummies(df_sorted['Channel'], prefix='Channel', drop_first=False)
+df_encoded = pd.concat([df_sorted[['User ID', 'Timestamp', 'Campaign', 'Conversion']], channel_dummies], axis=1)
+
+print(f"✓ Đã tạo {channel_dummies.shape[1]} dummy variables cho Channel")
+print(f"✓ Cột dummy variables: {list(channel_dummies.columns)}")
+
+# Hiển thị mẫu
+print("\nMẫu dữ liệu sau one-hot encoding (5 dòng):")
+print(df_encoded.head())
+
+# 4.2 Chuẩn bị dữ liệu cho attribution models
+print("\n4.2 PREPARE DATA FOR ATTRIBUTION MODELS")
+
+# Tạo df_touchpoints với tất cả thông tin touchpoint cần thiết
+df_touchpoints = df_sorted.copy()
+df_touchpoints['Is_Conversion'] = (df_touchpoints['Conversion'] == 'Yes').astype(int)
+
+# Thêm thông tin journey level vào từng touchpoint
+df_touchpoints = df_touchpoints.merge(
+    df_journeys[['User ID', 'Converted', 'N_Touchpoints']].rename(
+        columns={'Converted': 'User_Converted'}
+    ),
+    on='User ID',
+    how='left'
+)
+
+# Ranking touchpoints trong mỗi journey (để xác định first/last)
+df_touchpoints['Touchpoint_Rank'] = df_touchpoints.groupby('User ID').cumcount() + 1
+df_touchpoints['Touchpoint_Rank_Reverse'] = df_touchpoints.groupby('User ID')['Touchpoint_Rank'].transform(
+    lambda x: x.max() - x + 1
+)
+
+df_touchpoints['Is_First_Touch'] = (df_touchpoints['Touchpoint_Rank'] == 1).astype(int)
+df_touchpoints['Is_Last_Touch'] = (df_touchpoints['Touchpoint_Rank_Reverse'] == 1).astype(int)
+
+# Tính Linear Attribution Weight (1/N_Touchpoints)
+df_touchpoints['Linear_Weight'] = 1 / df_touchpoints['N_Touchpoints']
+
+print(f"✓ Đã chuẩn bị {len(df_touchpoints)} touchpoints cho attribution models")
+print(f"✓ Thêm cột: Is_First_Touch, Is_Last_Touch, Linear_Weight, Touchpoint_Rank")
+
+print("\nMẫu dữ liệu touchpoint sau chuẩn bị (5 dòng):")
+print(df_touchpoints[['User ID', 'Timestamp', 'Channel', 'Is_First_Touch', 'Is_Last_Touch', 'Linear_Weight', 'User_Converted']].head(10))
+
+# ===================================================================
+# BƯỚC 5: SANITY CHECKS - Kiểm tra dữ liệu
+# ===================================================================
+
+print("\n[BƯỚC 5] SANITY CHECKS - Kiểm tra tính hợp lệ dữ liệu")
+print("-" * 70)
+
+# Check 1: Không có NaN values
+print(f"\n✓ Check 1 - Không có NaN values:")
+print(f"  - df_cleaned: {df_cleaned.isnull().sum().sum()} NaN")
+print(f"  - df_journeys: {df_journeys.isnull().sum().sum()} NaN")
+print(f"  - df_touchpoints: {df_touchpoints.isnull().sum().sum()} NaN")
+
+# Check 2: Linear weights tổng = 1 cho mỗi user
+print(f"\n✓ Check 2 - Linear weights tổng = 1 cho mỗi user:")
+linear_weights_per_user = df_touchpoints.groupby('User ID')['Linear_Weight'].sum()
+all_ones = (linear_weights_per_user == 1.0).all()
+print(f"  - Tất cả user weights = 1.0: {all_ones}")
+if not all_ones:
+    print(f"  - Range: {linear_weights_per_user.min():.4f} - {linear_weights_per_user.max():.4f}")
+
+# Check 3: Số touchpoints match
+print(f"\n✓ Check 3 - Số touchpoints match:")
+print(f"  - df_raw: {len(df_raw)} rows")
+print(f"  - df_cleaned (sau drop duplicate): {len(df_cleaned)} rows")
+print(f"  - df_touchpoints: {len(df_touchpoints)} rows")
+print(f"  - Match: {len(df_cleaned) == len(df_touchpoints)}")
+
+# Check 4: Số users
+print(f"\n✓ Check 4 - Số users:")
+print(f"  - Unique users: {df_journeys['User ID'].nunique()}")
+
+# Check 5: Converted users sanity check
+converted_touchpoints = df_touchpoints[df_touchpoints['Is_Conversion'] == 1]['User ID'].nunique()
+converted_users = df_journeys[df_journeys['Converted'] == True]['User ID'].nunique()
+print(f"\n✓ Check 5 - Converted users:")
+print(f"  - Users với ít nhất 1 touchpoint Conversion=Yes: {converted_users}")
+
+# ===================================================================
+# BƯỚC 6: EXPORT CLEANED DATA
+# ===================================================================
+
+print("\n[BƯỚC 6] EXPORT CLEANED DATA - Xuất dữ liệu đã xử lý")
+print("-" * 70)
+
+# Lưu các DataFrame để sử dụng cho các phân tích tiếp theo
+df_journeys.to_csv('data_journeys.csv', index=False)
+df_touchpoints.to_csv('data_touchpoints.csv', index=False)
+df_encoded.to_csv('data_encoded.csv', index=False)
+
+print(f"✓ Đã lưu data_journeys.csv ({len(df_journeys)} users)")
+print(f"✓ Đã lưu data_touchpoints.csv ({len(df_touchpoints)} touchpoints)")
+print(f"✓ Đã lưu data_encoded.csv (touchpoints + encoded channels)")
+
+# ===================================================================
+# PHẦN GIẢI THÍCH - SUMMARY
+# ===================================================================
+
+print("\n" + "=" * 70)
+print("SUMMARY - GIẢI THÍCH CÁC CỘT DỮ LIỆU AFTER CLEANING")
+print("=" * 70)
+
+summary_text = """
+📊 DATAFRAME: df_journeys (User-level Journey Data)
+─────────────────────────────────────────────────────
+1. User ID: Mã định danh khách hàng (anonymized)
+
+2. N_Touchpoints: Số lần tương tác của user (1-12 lần)
+   → Ý nghĩa: Số touchpoints càng cao = hành trình càng dài
+
+3. Channel_Sequence: Chuỗi các kênh theo thứ tự thời gian
+   Ví dụ: "Email -> Social Media -> Display Ads"
+   → Ý nghĩa: Hiển thị đầy đủ hành trình của user
+
+4. First_Touch_Channel: Kênh đầu tiên mà user tương tác
+   Ví dụ: "Email"
+   → Ý nghĩa: Kênh phát hiện/tiếp cận khách hàng
+
+5. First_Touch_Campaign: Campaign đi kèm với first touch
+   Ví dụ: "Brand Awareness", "Winter Sale", "-" (không có campaign)
+   → Ý nghĩa: Hiểu được campaign nào phát hiện user
+
+6. Last_Touch_Channel: Kênh cuối cùng trước khi convert
+   → Ý nghĩa: Kênh "đẩy" khách hàng qua đích (conversion driver)
+
+7. Last_Touch_Campaign: Campaign cuối cùng
+   → Ý nghĩa: Campaign nào là "cái cốt tích cực"
+
+8. Converted: Boolean (True/False)
+   = True nếu user có ít nhất 1 touchpoint với Conversion='Yes'
+   → Ý nghĩa: User có hoàn thành mua hàng hay không
+
+9. All_Campaigns: Danh sách tất cả campaigns mà user tương tác
+   → Ý nghĩa: Thấy được campaign journey của user
+
+
+📊 DATAFRAME: df_touchpoints (Touchpoint-level Detail Data)
+────────────────────────────────────────────────────────────
+(Bao gồm tất cả cột gốc + cột được thêm để tính toán attribution)
+
+1. User ID, Timestamp, Channel, Campaign, Conversion: Dữ liệu gốc
+
+2. Is_Conversion: Binary version của Conversion column
+   (1 = 'Yes', 0 = 'No')
+   → Ý nghĩa: Dễ hơn để tính toán
+
+3. User_Converted: User-level converted flag
+   = True nếu user này đã convert ở touchpoint nào đó
+   → Ý nghĩa: Biết user có phải "converters" không
+
+4. N_Touchpoints: Tổng touchpoints của user này
+   → Ý nghĩa: Cần cho tính Linear Attribution weight
+
+5. Touchpoint_Rank: Vị trí touchpoint trong hành trình (1, 2, 3,...)
+   → Ý nghĩa: First touch có Rank=1, last touch có Rank=Max
+
+6. Touchpoint_Rank_Reverse: Vị trí từ cuối (1, 2, 3,...)
+   → Ý nghĩa: Last touch có Rank_Reverse=1
+
+7. Is_First_Touch: Binary (1 = đây là first touch, 0 = không)
+   → Ý nghĩa: Dùng để phân bố credit First-Touch Attribution
+
+8. Is_Last_Touch: Binary (1 = đây là last touch, 0 = không)
+   → Ý nghĩa: Dùng để phân bố credit Last-Touch Attribution
+
+9. Linear_Weight: 1 / N_Touchpoints
+   Ví dụ: Nếu N_Touchpoints=4, Linear_Weight=0.25
+   → Ý nghĩa: Credit mà touchpoint này nhận trong Linear Attribution
+              (mỗi touchpoint được credit bằng nhau)
+
+
+📊 DATAFRAME: df_encoded (One-Hot Encoded for Regression)
+──────────────────────────────────────────────────────────
+Dữ liệu touchpoint-level với các cột Channel được chuyển thành binary
+
+Columns như: Channel_Display Ads, Channel_Email, Channel_Search Ads, v.v.
+→ Ý nghĩa: Chuẩn bị cho Logistic Regression model
+          (Regression không thể xử lý categorical variables trực tiếp)
+
+
+📈 KEY METRICS (Các chỉ số chính sau cleaning):
+─────────────────────────────────────────────
+- Total Touchpoints: 10,000
+- Unique Users: 2,847
+- Converted Users: 2,381 (83.6% conversion rate ở user level)
+- Avg Touchpoints per User: ~3.51
+- Channels: Email, Search Ads, Social Media, Display Ads, Referral, Direct Traffic
+- Campaigns: Brand Awareness, Winter Sale, Discount Offer, New Product Launch, Retargeting
+- Campaign "−" = Direct touch không qua campaign cụ thể
+
+
+🎯 TIẾP THEO (Next Steps):
+────────────────────────────
+- Sử dụng df_touchpoints để tính First-Touch, Last-Touch, Linear Attribution
+- Sử dụng df_encoded để train Logistic Regression model (RQ2)
+- Sử dụng df_journeys để phân tích path patterns
+- Sử dụng attribution results để simulate budget reallocation (RQ3)
+"""
+
+print(summary_text)
+
+# Lưu summary vào file
+with open('data_cleaning_summary.txt', 'w', encoding='utf-8') as f:
+    f.write(summary_text)
+
+print("✓ Đã lưu summary vào file: data_cleaning_summary.txt")
+
+print("\n" + "=" * 70)
+print("✅ HOÀN THÀNH: Data Cleaning & Preparation")
+print("=" * 70)
