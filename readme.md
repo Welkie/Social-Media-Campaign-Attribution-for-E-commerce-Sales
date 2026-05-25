@@ -102,9 +102,9 @@ Tạo **3 file CSV** chuẩn bị cho phân tích tiếp theo:
 
 ---
 
-## GIẢI THÍCH Ý NGHĨA CỦA 3 FILE CSV
+## GIẢI THÍCH Ý NGHĨA TỪNG CỘT CỦA 3 FILE CSV
 
-## File `data_journeys.csv` (Dữ liệu theo Khách hàng)
+### File `data_journeys.csv` (Dữ liệu theo Khách hàng)
 
 - **User ID**: Mã định danh ẩn danh của khách hàng.
 
@@ -129,7 +129,7 @@ Tạo **3 file CSV** chuẩn bị cho phân tích tiếp theo:
 
 - **All_Campaigns**: Danh sách tất cả chiến dịch mà người này đã thấy qua.
 
-## File `data_touchpoints.csv`  
+### File `data_touchpoints.csv`  
 (Dữ liệu Điểm chạm chuẩn bị tính Attribution)
 
 Bao gồm các cột gốc:
@@ -175,7 +175,7 @@ Ngoài ra còn có các cột mới:
     ```
   - Mỗi điểm chạm sẽ nhận mức đóng góp bằng nhau là `0.25`.
 
-## File `data_encoded.csv`  
+### File `data_encoded.csv`  
 (Dữ liệu dành cho Mô hình Hồi quy Logistic)
 
 File này tương tự file gốc, nhưng thay vì có một cột `Channel` chứa chữ như:
