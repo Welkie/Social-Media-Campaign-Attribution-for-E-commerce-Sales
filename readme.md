@@ -96,58 +96,114 @@ Tạo **3 file CSV** chuẩn bị cho phân tích tiếp theo:
 
 | File                     | Mục Đích                               | Rows   |
 | ------------------------ | -------------------------------------- | ------ |
-| **data_journeys.csv**    | User-level data (1 row = 1 user)       | 2,847  |
-| **data_touchpoints.csv** | Touchpoint-level + attribution weights | 10,000 |
-| **data_encoded.csv**     | Touchpoints + one-hot encoded channels | 10,000 |
+| **data_journeys.csv**    | Dữ liệu được gộp lại theo cấp độ Người dùng (mỗi dòng là toàn bộ hành trình của 1 khách). Mục đích: Dùng để vẽ các Sơ đồ luồng (Sankey Diagram), tìm hiểu khách hàng thường đi theo trình tự nào trước khi trả tiền.       | 2,847  |
+| **data_touchpoints.csv** |  Dữ liệu chi tiết từng điểm chạm nhưng được tính sẵn điểm tín dụng dùng cho First-touch, Last-touch, và Linear trọng số. Mục đích: Là nguồn Data chính dùng để vẽ Biểu đồ Attribution (Attribution Bar Chart) nhằm phân bổ phần trăm ngân sách. | 10,000 |
+| **data_encoded.csv**     | Dữ liệu điểm chạm đã được số hóa mã nhị phân (One-hot Encoding). Nhằm biến chữ (tên kênh) thành các con số 1 và 0. Mục đích: Dùng riêng để huấn luyện mô hình Logistic Regression (trả lời cho bộ câu hỏi RQ2) do thuật toán Data Science chỉ có thể hiểu những con số. | 10,000 |
 
 ---
 
-## GIẢI THÍCH CÁC CỘT SAU CLEANING
+## GIẢI THÍCH Ý NGHĨA CỦA 3 FILE CSV
 
-### data_journeys.csv (User-Level)
+## File `data_journeys.csv` (Dữ liệu theo Khách hàng)
 
-1. **User ID**: Mã khách hàng (anonymized)
-2. **N_Touchpoints**: Số lần tương tác (1-12)
-3. **Channel_Sequence**: Hành trình kênh theo thứ tự thời gian
+- **User ID**: Mã định danh ẩn danh của khách hàng.
 
-   * Ví dụ: `Email -> Social Media -> Display Ads`
-4. **First_Touch_Channel**: Kênh phát hiện user
+- **N_Touchpoints**: Độ dài hành trình  
+  (số lần người đó nhấp quảng cáo trước khi chấm dứt tương tác).
 
-   * Ai khiến user biết đến brand?
-5. **Last_Touch_Channel**: Kênh chuyển đổi (trước khi mua)
+- **Channel_Sequence**: Con đường di chuyển.  
+  Ví dụ:
+  ```text
+  Email -> Social Media -> Referral
+  ```
 
-   * Ai là kênh cuối cùng thuyết phục user mua?
-6. **Converted**: Boolean (True/False)
+- **First_Touch_Channel / First_Touch_Campaign**:  
+  Nơi đầu tiên khách lạc vào phễu marketing  
+  (Kênh và Chiến dịch đầu tiên).
 
-   * User có hoàn thành mua hàng?
-7. **All_Campaigns**: Danh sách campaigns tương tác
+- **Last_Touch_Channel / Last_Touch_Campaign**:  
+  Nơi cuối cùng khách tương tác  
+  (nơi xảy ra hoặc không xảy ra việc mua hàng).
 
-### data_touchpoints.csv (Touchpoint-Level)
+- **Converted**: Boolean (`True/False`) xác nhận rằng xét theo toàn bộ hành trình, khách này có mua hàng hay không.
 
-Chứa tất cả cột gốc PLUS:
+- **All_Campaigns**: Danh sách tất cả chiến dịch mà người này đã thấy qua.
 
-1. **Is_Conversion**: Binary version (1='Yes', 0='No')
-2. **User_Converted**: Cờ user-level converted
-3. **N_Touchpoints**: Tổng touchpoints của user
-4. **Touchpoint_Rank**: Vị trí 1, 2, 3,... trong hành trình
-5. **Is_First_Touch**: 1 nếu đây là first touch
+## File `data_touchpoints.csv`  
+(Dữ liệu Điểm chạm chuẩn bị tính Attribution)
 
-   * Dùng để phân bố credit First-Touch model
-6. **Is_Last_Touch**: 1 nếu đây là last touch
+Bao gồm các cột gốc:
 
-   * Dùng để phân bố credit Last-Touch model
-7. **Linear_Weight**: 1/N_Touchpoints
+- `User ID`
+- `Timestamp`
+- `Channel`
+- `Campaign`
+- `Conversion`
 
-   * Ví dụ: 0.50 (nếu user có 2 touchpoints)
-   * Ví dụ: 0.25 (nếu user có 4 touchpoints)
-   * Ý nghĩa: Mỗi touchpoint được credit bằng nhau
+Ngoài ra còn có các cột mới:
 
-### data_encoded.csv (For Regression)
+- **Is_Conversion**:  
+  Chuyển giá trị `Conversion = Yes/No` thành `1/0` để việc tính toán bằng số diễn ra nhanh hơn.
 
-Touchpoint-level data + 6 dummy variables:
+- **User_Converted**:  
+  Đánh dấu `True/False` xem khách hàng của điểm chạm hiện tại cuối cùng có chốt đơn hay không.
 
-* `Channel_Email`, `Channel_Search Ads`, `Channel_Social Media`, v.v.
-* Dùng cho: Training Logistic Regression model
+- **Touchpoint_Rank / Touchpoint_Rank_Reverse**:  
+  Thứ tự của điểm chạm trong hành trình.
+
+  Ví dụ:
+  - Điểm chạm là lần click thứ 2 → `Rank = 2`
+  - Đồng thời là lần thứ 3 nếu đếm từ cuối lên → `Reverse = 3`
+
+- **Is_First_Touch / Is_Last_Touch**:  
+  Đánh dấu `1` nếu đây là điểm đầu tiên hoặc cuối cùng trong hành trình  
+  (nếu không phải sẽ là `0`).
+
+- **Linear_Weight**:  
+  Điểm chia đều dùng cho mô hình **Linear Attribution**.
+
+  Công thức:
+
+  ```text
+  Linear_Weight = 1 / Tổng số hành động
+  ```
+
+  Ví dụ:
+  - Nếu hành trình có 4 cú click:
+    ```text
+    1 / 4 = 0.25
+    ```
+  - Mỗi điểm chạm sẽ nhận mức đóng góp bằng nhau là `0.25`.
+
+## File `data_encoded.csv`  
+(Dữ liệu dành cho Mô hình Hồi quy Logistic)
+
+File này tương tự file gốc, nhưng thay vì có một cột `Channel` chứa chữ như:
+
+```text
+Email
+Referral
+Social Media
+```
+
+thì hệ thống sẽ tự động tách thành nhiều cột riêng:
+
+- `Channel_Direct Traffic`
+- `Channel_Display Ads`
+- `Channel_Email`
+- `Channel_Referral`
+- `Channel_Search Ads`
+- `Channel_Social Media`
+
+Ví dụ:
+
+Nếu điểm chạm xuất phát từ `Email`:
+
+| Channel_Email | Channel_Referral | Channel_Search Ads |
+|---|---|---|
+| 1 | 0 | 0 |
+
+Điều này giúp mô hình **Logistic Regression** có thể xử lý dữ liệu dạng phân loại (categorical data).
 
 ---
 
@@ -171,4 +227,3 @@ Dữ liệu đã sẵn sàng cho các bước phân tích tiếp theo:
 * **RQ2**: So sánh 3 attribution models (First/Last/Linear)
 * **RQ3**: Mô phỏng tái phân bổ ngân sách
 
-Made changes.
