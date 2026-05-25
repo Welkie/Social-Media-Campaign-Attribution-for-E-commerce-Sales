@@ -1,0 +1,95 @@
+
+📊 DATAFRAME: df_journeys (User-level Journey Data)
+─────────────────────────────────────────────────────
+1. User ID: Mã định danh khách hàng (anonymized)
+
+2. N_Touchpoints: Số lần tương tác của user (1-12 lần)
+   → Ý nghĩa: Số touchpoints càng cao = hành trình càng dài
+
+3. Channel_Sequence: Chuỗi các kênh theo thứ tự thời gian
+   Ví dụ: "Email -> Social Media -> Display Ads"
+   → Ý nghĩa: Hiển thị đầy đủ hành trình của user
+
+4. First_Touch_Channel: Kênh đầu tiên mà user tương tác
+   Ví dụ: "Email"
+   → Ý nghĩa: Kênh phát hiện/tiếp cận khách hàng
+
+5. First_Touch_Campaign: Campaign đi kèm với first touch
+   Ví dụ: "Brand Awareness", "Winter Sale", "-" (không có campaign)
+   → Ý nghĩa: Hiểu được campaign nào phát hiện user
+
+6. Last_Touch_Channel: Kênh cuối cùng trước khi convert
+   → Ý nghĩa: Kênh "đẩy" khách hàng qua đích (conversion driver)
+
+7. Last_Touch_Campaign: Campaign cuối cùng
+   → Ý nghĩa: Campaign nào là "cái cốt tích cực"
+
+8. Converted: Boolean (True/False)
+   = True nếu user có ít nhất 1 touchpoint với Conversion='Yes'
+   → Ý nghĩa: User có hoàn thành mua hàng hay không
+
+9. All_Campaigns: Danh sách tất cả campaigns mà user tương tác
+   → Ý nghĩa: Thấy được campaign journey của user
+
+
+📊 DATAFRAME: df_touchpoints (Touchpoint-level Detail Data)
+────────────────────────────────────────────────────────────
+(Bao gồm tất cả cột gốc + cột được thêm để tính toán attribution)
+
+1. User ID, Timestamp, Channel, Campaign, Conversion: Dữ liệu gốc
+
+2. Is_Conversion: Binary version của Conversion column
+   (1 = 'Yes', 0 = 'No')
+   → Ý nghĩa: Dễ hơn để tính toán
+
+3. User_Converted: User-level converted flag
+   = True nếu user này đã convert ở touchpoint nào đó
+   → Ý nghĩa: Biết user có phải "converters" không
+
+4. N_Touchpoints: Tổng touchpoints của user này
+   → Ý nghĩa: Cần cho tính Linear Attribution weight
+
+5. Touchpoint_Rank: Vị trí touchpoint trong hành trình (1, 2, 3,...)
+   → Ý nghĩa: First touch có Rank=1, last touch có Rank=Max
+
+6. Touchpoint_Rank_Reverse: Vị trí từ cuối (1, 2, 3,...)
+   → Ý nghĩa: Last touch có Rank_Reverse=1
+
+7. Is_First_Touch: Binary (1 = đây là first touch, 0 = không)
+   → Ý nghĩa: Dùng để phân bố credit First-Touch Attribution
+
+8. Is_Last_Touch: Binary (1 = đây là last touch, 0 = không)
+   → Ý nghĩa: Dùng để phân bố credit Last-Touch Attribution
+
+9. Linear_Weight: 1 / N_Touchpoints
+   Ví dụ: Nếu N_Touchpoints=4, Linear_Weight=0.25
+   → Ý nghĩa: Credit mà touchpoint này nhận trong Linear Attribution
+              (mỗi touchpoint được credit bằng nhau)
+
+
+📊 DATAFRAME: df_encoded (One-Hot Encoded for Regression)
+──────────────────────────────────────────────────────────
+Dữ liệu touchpoint-level với các cột Channel được chuyển thành binary
+
+Columns như: Channel_Display Ads, Channel_Email, Channel_Search Ads, v.v.
+→ Ý nghĩa: Chuẩn bị cho Logistic Regression model
+          (Regression không thể xử lý categorical variables trực tiếp)
+
+
+📈 KEY METRICS (Các chỉ số chính sau cleaning):
+─────────────────────────────────────────────
+- Total Touchpoints: 10,000
+- Unique Users: 2,847
+- Converted Users: 2,381 (83.6% conversion rate ở user level)
+- Avg Touchpoints per User: ~3.51
+- Channels: Email, Search Ads, Social Media, Display Ads, Referral, Direct Traffic
+- Campaigns: Brand Awareness, Winter Sale, Discount Offer, New Product Launch, Retargeting
+- Campaign "−" = Direct touch không qua campaign cụ thể
+
+
+🎯 TIẾP THEO (Next Steps):
+────────────────────────────
+- Sử dụng df_touchpoints để tính First-Touch, Last-Touch, Linear Attribution
+- Sử dụng df_encoded để train Logistic Regression model (RQ2)
+- Sử dụng df_journeys để phân tích path patterns
+- Sử dụng attribution results để simulate budget reallocation (RQ3)

@@ -1,172 +1,204 @@
-# BƯỚC 1: TẢI VÀ KHÁM PHÁ DỮ LIỆU (Data Loading & Exploration)
+Tôi sẽ thực hiện phần 4 "Data Collection, Understanding, Preparation" cho bạn. Trước tiên, hãy để tôi kiểm tra các file hiện có.
 
-## Kết quả
+Read [](file:///d%3A/My%20document/DAP391m/Social-Media-Campaign-Attribution-for-E-commerce-Sales/data_cleaning.py)
 
-- Tải thành công dataset 12,330 hàng × 18 cột từ `online_shoppers_intention.csv`
-- Không có dữ liệu thiếu (Missing Values)
-- Các cột chính:
-  - Administrative
-  - Informational
-  - ProductRelated
-  - BounceRates
-  - ExitRates
-  - PageValues
-  - TrafficType
-  - VisitorType
-  - Revenue
-  - etc.
+Read [](file:///d%3A/My%20document/DAP391m/Social-Media-Campaign-Attribution-for-E-commerce-Sales/multi_touch_attribution_data.csv#1-1), lines 1 to 20
 
----
+Created [](file:///d%3A/My%20document/DAP391m/Social-Media-Campaign-Attribution-for-E-commerce-Sales/data_cleaning.py)
 
-# BƯỚC 2: HIỂU DỮ LIỆU (Data Understanding)
+Bây giờ hãy để tôi chạy script để xem kết quả:
 
-## Phân tích chuyển đổi
+Ran terminal command: cd "d:\My document\DAP391m\Social-Media-Campaign-Attribution-for-E-commerce-Sales" ; python data_cleaning.py
+Completed with input: cd "d:\My document\DAP391m\Social-Media-Campaign-Attribution-for-E-commerce-Sales" ; python data_cleaning.py
 
-- Tỷ lệ chuyển đổi chung: 15.47%
-  - 1,908 phiên chuyển đổi / 12,330 tổng cộng
+Replacing 4 lines with 4 lines in [](file:///d%3A/My%20document/DAP391m/Social-Media-Campaign-Attribution-for-E-commerce-Sales/data_cleaning.py)
 
----
+```
+```
 
-## Theo Traffic Type (Loại lưu lượng)
+Ran terminal command: cd "d:\My document\DAP391m\Social-Media-Campaign-Attribution-for-E-commerce-Sales" ; python data_cleaning.py
 
-| TrafficType | Tỷ lệ chuyển đổi |
-|---|---|
-| 7, 8, 20 | 27-30% |
-| 2, 5 | 21-22% |
-| 3, 13 | 5-8% |
+Read [](file:///c%3A/Users/lamhu/AppData/Roaming/Code/User/workspaceStorage/41ef08ff41762aa6fb904d1755596ecf/GitHub.copilot-chat/chat-session-resources/2097d0df-dc34-462b-a2aa-a47d150447c4/toolu_bdrk_01LaWLbqPWCE1ip6BCdmNfTB__vscode-1779690940653/content.txt#1-1), lines 1 to 200
 
----
+Read [](file:///c%3A/Users/lamhu/AppData/Roaming/Code/User/workspaceStorage/41ef08ff41762aa6fb904d1755596ecf/GitHub.copilot-chat/chat-session-resources/2097d0df-dc34-462b-a2aa-a47d150447c4/toolu_bdrk_01LaWLbqPWCE1ip6BCdmNfTB__vscode-1779690940653/content.txt#200-200), lines 200 to 288
 
-## Theo Visitor Type (Loại khách truy cập)
+Perfect! Script đã hoàn thành thành công. Hãy để tôi kiểm tra các file đã được tạo:
 
-| VisitorType | Tỷ lệ chuyển đổi |
-|---|---|
-| New_Visitor | 24.91% |
-| Other | 18.82% |
-| Returning_Visitor | 13.93% |
+Read [](file:///d%3A/My%20document/DAP391m/Social-Media-Campaign-Attribution-for-E-commerce-Sales)
 
----
+Xuất sắc! Phần 4 **Data Collection, Understanding & Preparation** đã hoàn thành 100%. Dưới đây là tóm tắt chi tiết:
 
-## Theo Tháng
+## KỸ THUẬT LÀM SẠCH VÀ CHUẨN BỊ DỮ LIỆU
 
-| Tháng | Tỷ lệ chuyển đổi |
-|---|---|
-| Nov | 25.35% |
-| May | 1.63% |
-| Feb | 10.85% |
+### Bước 1: Load & Clean (Tải & Làm Sạch)
 
----
+* Tải 10,000 touchpoints từ CSV
+* Kiểm tra missing values: **0 NaN**
+* Xóa duplicate rows: **0 duplicate tìm thấy**
+* Convert Timestamp → datetime format
+* Khoảng thời gian: 10/02/2025 → 11/02/2025
 
-# BƯỚC 3: LÀM SẠCH DỮ LIỆU (Data Cleaning)
+### Bước 2: Reconstruct Journeys (Tái Tạo Hành Trình)
 
-## 1. Xóa bản sao
+* Sắp xếp by User ID + Timestamp (chronological order)
+* Tái tạo **2,847 user journeys** từ 10,000 touchpoints
+* Journey length: 1-12 touchpoints, **avg = 3.51**
+* Converted users: **2,381 (83.6% conversion rate)**
 
-- Tìm thấy 125 bản sao
-- Loại bỏ → Dataset còn 12,205 hàng
+### Bước 3: Data Understanding (Khám Phá)
 
----
+#### 3.1 Channel Performance (Hiệu suất từng kênh)
 
-## 2. Chuẩn hóa dữ liệu
+| Channel        | Conversion Rate       |
+| -------------- | --------------------- |
+| Email          | **50.18%** (Cao nhất) |
+| Referral       | 49.91%                |
+| Display Ads    | 49.61%                |
+| Direct Traffic | 49.56%                |
+| Social Media   | 49.34%                |
+| Search Ads     | 47.98% (Thấp nhất)    |
 
-- BounceRates & ExitRates: Chuẩn hóa vào khoảng `[0, 1]`
+#### 3.2 First-Touch Attribution (Kênh phát hiện)
 
-| Giá trị | Kết quả |
-|---|---|
-| Min | 0.0000 |
-| Max | 0.2000 |
+* **Display Ads** dẫn đầu: 86.99% conversion rate khi là first touch
+* Direct Traffic: 84.05%
+* Search Ads yếu nhất: 80.48%
 
----
+#### 3.3 Last-Touch Attribution (Kênh chuyển đổi)
 
-## 3. Chuyển đổi kiểu dữ liệu
+* **Display Ads** dẫn đầu lần nữa: 85.68%
+* Referral: 84.40%
+* Search Ads: 82.29% (thấp nhất)
 
-| Cột | Kiểu mới |
-|---|---|
-| Month | Category |
-| VisitorType | Category |
-| TrafficType | Category |
-| Revenue | Boolean |
-| Weekend | Boolean |
+#### 3.4 Campaign Performance
 
----
+| Campaign           | Conversion Rate |
+| ------------------ | --------------- |
+| Brand Awareness    | **50.65%**      |
+| Discount Offer     | 50.45%          |
+| Retargeting        | 49.53%          |
+| Winter Sale        | 48.62%          |
+| New Product Launch | 47.74%          |
 
-# BƯỚC 4: CHUẨN BỊ DỮ LIỆU (Data Preparation)
+#### 3.5 Journey Length Distribution
 
-## 1. Tạo SessionID
+* **343 users**: 1 touchpoint (direct conversion)
+* **584 users**: 2 touchpoints
+* **595 users**: 3 touchpoints (mode)
+* **3 users**: 12 touchpoints (longest journey)
 
-- Tạo định danh duy nhất cho mỗi phiên (1 đến 12,205)
+### Bước 4: Data Preparation (Chuẩn Bị)
 
----
+#### 4.1 One-Hot Encoding
 
-## 2. Tạo Traffic Segments (Channel)
+* Tạo **6 dummy variables** cho Channel:
 
-Ánh xạ TrafficType thành các kênh marketing có ý nghĩa:
+  * Channel_Direct Traffic
+  * Channel_Display Ads
+  * Channel_Email
+  * Channel_Referral
+  * Channel_Search Ads
+  * Channel_Social Media
+* Dùng cho: Logistic Regression model (vì regression không xử lý categorical)
 
-| Channel | Số phiên | Tỷ lệ |
-|---|---|---|
-| Referral | 3,911 | 32% |
-| Other | 2,567 | 21% |
-| Direct/Organic | 2,388 | 20% |
-| Social Media | 2,013 | 17% |
-| Display Ads | 1,066 | 9% |
-| Paid Search | 260 | 2% |
+#### 4.2 Attribution Preparation
 
----
+* Thêm cột `Is_First_Touch` (binary): 1 nếu là first touch
+* Thêm cột `Is_Last_Touch` (binary): 1 nếu là last touch
+* Thêm cột `Linear_Weight = 1/N_Touchpoints`:
 
-## 3. Tính năng Bounce Session
+  * User có 4 touchpoints → mỗi touchpoint được 0.25 credit
+  * User có 2 touchpoints → mỗi touchpoint được 0.50 credit
+* Thêm `Touchpoint_Rank`: vị trí trong hành trình
+* Thêm `User_Converted`: flag nếu user đã convert
 
-- Tạo cột `IsBounceSession` để xác định phiên bounce (tỷ lệ bounce = 1.0)
+### Bước 5: Sanity Checks (Kiểm Tra Tính Hợp Lệ)
 
----
+* **0 NaN values** trong tất cả DataFrames
+* **Linear weights = 1.0** cho mỗi user (perfect)
+* Touchpoints match: 10,000 rows
+* Converted users: 2,381 users
+* **Random seed = 42** cho reproducibility
 
-## 4. Phân tích PageValues
+### Bước 6: Export Data (Xuất Dữ Liệu)
 
-| Chỉ số | Giá trị |
-|---|---|
-| Min | 0.00 |
-| Mean | 5.95 |
-| Max | 361.76 |
+Tạo **3 file CSV** chuẩn bị cho phân tích tiếp theo:
 
----
-
-## 5. Sắp xếp dữ liệu
-
-- Sắp xếp theo thứ tự thời gian (`Month → SessionID`)
+| File                     | Mục Đích                               | Rows   |
+| ------------------------ | -------------------------------------- | ------ |
+| **data_journeys.csv**    | User-level data (1 row = 1 user)       | 2,847  |
+| **data_touchpoints.csv** | Touchpoint-level + attribution weights | 10,000 |
+| **data_encoded.csv**     | Touchpoints + one-hot encoded channels | 10,000 |
 
 ---
 
-# KIỂM TRA CHẤT LƯỢNG (Sanity Checks)
+## GIẢI THÍCH CÁC CỘT SAU CLEANING
 
-| Kiểm tra | Kết quả |
-|---|---|
-| Không có NaN | True |
-| Không có Infinity | True |
-| SessionID duy nhất | True |
-| Revenue chỉ True/False | True |
+### data_journeys.csv (User-Level)
+
+1. **User ID**: Mã khách hàng (anonymized)
+2. **N_Touchpoints**: Số lần tương tác (1-12)
+3. **Channel_Sequence**: Hành trình kênh theo thứ tự thời gian
+
+   * Ví dụ: `Email -> Social Media -> Display Ads`
+4. **First_Touch_Channel**: Kênh phát hiện user
+
+   * Ai khiến user biết đến brand?
+5. **Last_Touch_Channel**: Kênh chuyển đổi (trước khi mua)
+
+   * Ai là kênh cuối cùng thuyết phục user mua?
+6. **Converted**: Boolean (True/False)
+
+   * User có hoàn thành mua hàng?
+7. **All_Campaigns**: Danh sách campaigns tương tác
+
+### data_touchpoints.csv (Touchpoint-Level)
+
+Chứa tất cả cột gốc PLUS:
+
+1. **Is_Conversion**: Binary version (1='Yes', 0='No')
+2. **User_Converted**: Cờ user-level converted
+3. **N_Touchpoints**: Tổng touchpoints của user
+4. **Touchpoint_Rank**: Vị trí 1, 2, 3,... trong hành trình
+5. **Is_First_Touch**: 1 nếu đây là first touch
+
+   * Dùng để phân bố credit First-Touch model
+6. **Is_Last_Touch**: 1 nếu đây là last touch
+
+   * Dùng để phân bố credit Last-Touch model
+7. **Linear_Weight**: 1/N_Touchpoints
+
+   * Ví dụ: 0.50 (nếu user có 2 touchpoints)
+   * Ví dụ: 0.25 (nếu user có 4 touchpoints)
+   * Ý nghĩa: Mỗi touchpoint được credit bằng nhau
+
+### data_encoded.csv (For Regression)
+
+Touchpoint-level data + 6 dummy variables:
+
+* `Channel_Email`, `Channel_Search Ads`, `Channel_Social Media`, v.v.
+* Dùng cho: Training Logistic Regression model
 
 ---
 
-# Ý nghĩa từng cột trong `data_cleaned.csv`
+## KEY INSIGHTS
 
-| STT | Cột | Kiểu | Ý nghĩa | Ví dụ |
-|---|---|---|---|---|
-| 1 | SessionID | Integer | Định danh duy nhất của mỗi phiên người dùng | 1, 2, 3, ... 12,205 |
-| 2 | Administrative | Integer | Số lần truy cập trang hành chính | 0, 2, 5 |
-| 3 | Administrative_Duration | Float | Tổng thời gian (giây) trên trang hành chính | 0.0, 123.45 |
-| 4 | Informational | Integer | Số lần truy cập trang thông tin | 0, 1, 3 |
-| 5 | Informational_Duration | Float | Tổng thời gian (giây) trên trang thông tin | 0.0, 45.67 |
-| 6 | ProductRelated | Integer | Số lần truy cập trang sản phẩm | 1, 5, 20 |
-| 7 | ProductRelated_Duration | Float | Tổng thời gian (giây) xem sản phẩm | 0.0, 456.78 |
-| 8 | BounceRates | Float | Tỷ lệ bounce trung bình của trang | 0.0, 0.5, 1.0 |
-| 9 | ExitRates | Float | Tỷ lệ thoát từ trang | 0.0, 0.2, 1.0 |
-| 10 | PageValues | Float | Tổng giá trị của các trang được xem | 0.0, 5.95, 361.76 |
-| 11 | SpecialDay | Float | Ngày lễ/sự kiện đặc biệt (0=không) | 0.0, 1.0 (Valentine), 2.0 (Mother's Day) |
-| 12 | Month | Category | Tháng phiên diễn ra | Jan, Feb, Mar, ... Dec |
-| 13 | OperatingSystems | Integer | Mã hệ điều hành | 1, 2, 3, ... |
-| 14 | Browser | Integer | Mã trình duyệt | 1, 2, 3, ... |
-| 15 | Region | Integer | Mã vùng địa lý | 1, 2, 3, ... |
-| 16 | TrafficType | Category | Mã loại lưu lượng (gốc, chưa ánh xạ) | 1, 2, 3, ... 20 |
-| 17 | VisitorType | Category | Loại khách truy cập | New_Visitor, Returning_Visitor, Other |
-| 18 | Weekend | Boolean | Phiên có phải vào cuối tuần? | True, False |
-| 19 | Revenue | Boolean | Phiên có chuyển đổi/mua hàng? | True, False |
-| 20 | Channel | String | Tên kênh marketing (đã ánh xạ) | Direct/Organic, Referral, Social Media, ... |
-| 21 | IsBounceSession | Boolean | Phiên bounce 100%? | True, False |
+| Metric                 | Giá Trị                      |
+| ---------------------- | ---------------------------- |
+| Total Touchpoints      | **10,000**                   |
+| Unique Users           | **2,847**                    |
+| Converted Users        | **2,381 (83.6%)**            |
+| Avg Touchpoints/User   | **3.51**                     |
+| Most Common Journey    | **1-touchpoint (343 users)** |
+| Best Converter Channel | **Display Ads: 85.68%**      |
+| Best Awareness Channel | **Brand Awareness: 50.65%**  |
+
+---
+
+Dữ liệu đã sẵn sàng cho các bước phân tích tiếp theo:
+
+* **RQ1**: So sánh Social Media vs các kênh khác
+* **RQ2**: So sánh 3 attribution models (First/Last/Linear)
+* **RQ3**: Mô phỏng tái phân bổ ngân sách
+
+Made changes.
