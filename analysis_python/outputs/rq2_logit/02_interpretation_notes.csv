@@ -1,0 +1,5 @@
+finding,evidence
+Row-level channel signal is weak,row_channel AUC is near 0.50 and chi-square p-value is high
+User-level prediction improves substantially,any-channel exposure and journey length both predict user-level conversion
+Journey length is a major confounder,journey_length_only performs at least as well as user_any_channel
+Adjusted logistic benchmark is conservative,channel_plus_length is used for attribution-model comparison

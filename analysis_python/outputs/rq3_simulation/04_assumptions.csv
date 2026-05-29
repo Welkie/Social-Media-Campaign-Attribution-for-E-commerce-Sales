@@ -1,0 +1,7 @@
+parameter,value
+revenue_per_conversion,100.0
+total_budget,100000.0
+total_touchpoints,10000
+cost_per_touch,10.0
+sensitivity_factors,"[0.8, 1.0, 1.2]"
+random_seed,42

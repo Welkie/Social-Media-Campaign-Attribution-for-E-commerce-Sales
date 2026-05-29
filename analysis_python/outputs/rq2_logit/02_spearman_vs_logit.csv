@@ -1,0 +1,4 @@
+heuristic_model,benchmark,spearman_rho,p_value
+first_touch_pct,logit_adjusted_channel_share,0.4857,0.3287
+last_touch_pct,logit_adjusted_channel_share,0.0857,0.8717
+linear_pct,logit_adjusted_channel_share,0.3143,0.5441
