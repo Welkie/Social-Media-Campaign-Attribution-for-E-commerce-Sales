@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>DAP391m – Phân tích Plan & multi_touch_attribution_data.csv</title>
+<style>
+  :root{
+    --c-bg:#0f1115; --c-panel:#171a21; --c-border:#262b36;
+    --c-text:#e6e8ee; --c-muted:#9aa3b2; --c-accent:#5aa9ff;
+    --c-good:#48c78e; --c-warn:#ffc857; --c-bad:#ff6b6b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--c-bg);color:var(--c-text);line-height:1.55;font-size:15px}
+  header{padding:32px 48px;border-bottom:1px solid var(--c-border);
+         background:linear-gradient(180deg,#1b2030,#0f1115)}
+  header h1{margin:0 0 6px 0;font-size:26px;letter-spacing:.2px}
+  header p{margin:0;color:var(--c-muted)}
+  main{max-width:1100px;margin:0 auto;padding:32px 24px 80px}
+  h2{margin-top:48px;padding-bottom:8px;border-bottom:1px solid var(--c-border);font-size:22px}
+  h3{margin-top:28px;font-size:17px;color:#cfe0ff}
+  h4{margin-top:18px;margin-bottom:6px;font-size:14px;color:var(--c-muted);
+     text-transform:uppercase;letter-spacing:.06em}
+  .panel{background:var(--c-panel);border:1px solid var(--c-border);
+         border-radius:10px;padding:18px 22px;margin:14px 0}
+  .grid{display:grid;gap:14px}
+  .grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .grid-3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .grid-4{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  .kpi{background:var(--c-panel);border:1px solid var(--c-border);
+       border-radius:10px;padding:14px 16px}
+  .kpi .v{font-size:22px;font-weight:600;color:#fff}
+  .kpi .l{font-size:12px;color:var(--c-muted);text-transform:uppercase;
+          letter-spacing:.08em;margin-top:2px}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:8px 0}
+  th,td{border:1px solid var(--c-border);padding:6px 10px;text-align:left;vertical-align:top}
+  th{background:#1c2230;color:#dfe6f2;font-weight:600}
+  tbody tr:nth-child(even){background:#13161d}
+  code,pre{font-family:Consolas,Menlo,monospace;font-size:13px}
+  pre{background:#0a0c11;border:1px solid var(--c-border);padding:12px 14px;
+      border-radius:8px;overflow:auto}
+  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;
+       border:1px solid var(--c-border);background:#1c2230;color:#cfe0ff;
+       margin-right:6px;letter-spacing:.04em}
+  .tag.good{color:var(--c-good);border-color:#1f5b3a}
+  .tag.warn{color:var(--c-warn);border-color:#5d4815}
+  .tag.bad {color:var(--c-bad); border-color:#5b1f1f}
+  .callout{border-left:4px solid var(--c-accent);padding:10px 14px;
+           background:#15202b;border-radius:0 8px 8px 0;margin:14px 0}
+  .callout.warn{border-color:var(--c-warn);background:#221b0e}
+  .callout.bad {border-color:var(--c-bad); background:#22110f}
+  .callout.good{border-color:var(--c-good);background:#0e1e16}
+  ul{margin:6px 0 6px 22px;padding:0}
+  ol{margin:6px 0 6px 22px;padding:0}
+  li{margin:3px 0}
+  .muted{color:var(--c-muted)}
+  .row{display:flex;gap:14px;flex-wrap:wrap}
+  .col{flex:1 1 320px;min-width:0}
+  .verdict{font-size:18px;font-weight:600}
+  .bar{height:10px;background:#1c2230;border-radius:5px;overflow:hidden;margin-top:4px}
+  .bar > span{display:block;height:100%;background:linear-gradient(90deg,#5aa9ff,#48c78e)}
+  .toc{columns:2;column-gap:24px}
+  .toc a{color:#cfe0ff;text-decoration:none}
+  .toc a:hover{text-decoration:underline}
+  hr{border:0;border-top:1px solid var(--c-border);margin:18px 0}
+  .pill{display:inline-block;padding:1px 8px;border-radius:999px;
+        background:#1c2230;border:1px solid var(--c-border);font-size:12px;color:#cfe0ff}
+  .schema td:first-child{font-family:Consolas,Menlo,monospace;color:#cfe0ff}
+</style>
+</head>
+<body>
+<header>
+  <h1>DAP391m – Group 1 · Phân tích Project Plan &amp; <code>multi_touch_attribution_data.csv</code></h1>
+  <p>Báo cáo tổng hợp (đã cập nhật theo <code>ProjectPlanning_DAP_new.pdf</code>): tóm tắt plan, mô tả dữ liệu, đánh giá tính phù hợp, kế hoạch chi tiết để hoàn thành paper, báo cáo cleaning.</p>
+</header>
+
+<main>
+
+<div class="panel">
+  <h4>Mục lục</h4>
+  <div class="toc">
+    <p><a href="#sec1">1. Tóm tắt Project Plan (PDF)</a></p>
+    <p><a href="#sec2">2. Mô tả file <code>multi_touch_attribution_data.csv</code></a></p>
+    <p><a href="#sec3">3. Đánh giá: CSV này có đủ để nhóm dùng phân tích không?</a></p>
+    <p><a href="#sec4">4. Plan chi tiết để hoàn thành paper</a></p>
+    <p><a href="#sec5">5. Báo cáo cleaning (đã làm gì, kết quả)</a></p>
+    <p><a href="#sec6">6. File xuất ra &amp; cách dùng</a></p>
+  </div>
+</div>
+
+<!-- ============================================================== -->
+<h2 id="sec1">1. Tóm tắt Project Plan – DAP391m Group 1</h2>
+
+<div class="panel">
+  <p><strong>Đề tài:</strong> Multi-Channel Attribution Modeling – đo lường đóng góp của từng <strong>marketing channel</strong> (Social Media, Email, Search Ads, Display Ads, Referral, Direct Traffic) vào conversion, từ đó hỗ trợ phân bổ ngân sách marketing và tối ưu ROI.</p>
+  <p><strong>Phương pháp lõi:</strong> First-Touch, Last-Touch, Linear (+ Markov chain stretch goal qua NetworkX); benchmark bằng Logistic Regression (statsmodels có CI &amp; odds ratio). Plan mới <strong>không đề cập bootstrap</strong> — chỉ dùng Spearman ρ và pairwise KL-divergence để so sánh các model.</p>
+  <p><strong>Dataset chính (cập nhật):</strong> <code>multi_touch_attribution_data.csv</code> từ Kaggle (vivekparasharr/multi-touch-attribution) — 10,000 touchpoint, 2,847 user, 6 channel. Đây là dataset <em>chính thức</em> trong plan mới, không còn dùng Online Shoppers Intention + Online Retail.</p>
+  <p><strong>Tác động kỳ vọng:</strong> Re-allocate budget có thể tăng ROI 15–25% theo các nghiên cứu tham chiếu.</p>
+</div>
+
+<h3>1.1 Câu hỏi nghiên cứu (RQ)</h3>
+<table>
+  <thead><tr><th style="width:60px">#</th><th>Câu hỏi</th><th style="width:260px">Phương pháp</th><th style="width:240px">Metric chính</th></tr></thead>
+  <tbody>
+    <tr><td><strong>RQ1</strong></td>
+        <td>Kênh <strong>Social Media</strong> đóng góp bao nhiêu vào conversion so với các kênh khác (Email, Search Ads, Display Ads, Referral, Direct Traffic)?</td>
+        <td>First / Last / Linear attribution trực tiếp trên <code>Channel</code> (đã có sẵn 6 nhóm, không cần proxy).</td>
+        <td>% share of attributed conversions per model; conversion rate by channel (SM 49.3%, Email 50.2%, Search Ads 48.0%); first-touch share (SM 16.3%, Display Ads 18.0% cao nhất).</td></tr>
+    <tr><td><strong>RQ2</strong></td>
+        <td>Mô hình attribution nào phản ánh đúng nhất hành vi conversion thực tế trong dữ liệu?</td>
+        <td>Logistic Regression với channel dummies làm benchmark; so sánh ranking của 3 heuristic model với regression bằng Spearman ρ; (optional) pairwise KL-divergence.</td>
+        <td>Pseudo-R² (McFadden), AUC, Spearman ρ giữa ranking heuristic vs regression, pairwise KL-divergence.</td></tr>
+    <tr><td><strong>RQ3</strong></td>
+        <td>Re-allocate budget theo attribution cải thiện simulated conversion &amp; revenue bao nhiêu?</td>
+        <td>3 kịch bản: S0 (chia đều 6 kênh), S1 (theo conversion rate), S2 (theo Linear attribution share). <strong>Uniform $100/conversion</strong> làm assumed revenue (không còn dùng Online Retail).</td>
+        <td>Δ conversions (%) &amp; Δ revenue (%) so với S0; ROI/channel; sensitivity ±20% trên revenue/conversion.</td></tr>
+  </tbody>
+</table>
+
+<h3>1.2 Pipeline 11 phần &amp; deadline trong plan</h3>
+<table>
+  <thead><tr><th>Section</th><th>Nội dung chính</th><th>Deadline</th></tr></thead>
+  <tbody>
+    <tr><td>2. Business Understanding</td><td>Vấn đề, mục tiêu, kỳ vọng</td><td>18/5/2026</td></tr>
+    <tr><td>3. Research Questions</td><td>RQ1, RQ2, RQ3</td><td>18/5/2026</td></tr>
+    <tr><td>4. Data Collection/Preparation</td><td>Multi-Touch Attribution dataset (Kaggle, 10k touch); clean, derive journey-level features</td><td>20/5/2026</td></tr>
+    <tr><td>5. SQL Analysis</td><td>First-touch CR, last-touch attribution, linear (1/N), top paths</td><td>20–24/5/2026</td></tr>
+    <tr><td>6. Python Analysis</td><td>6-step workflow + 4 notebook (basic / logistic / markov stretch / simulation)</td><td>20–24/5/2026</td></tr>
+    <tr><td>7. Visualization</td><td>Sankey, bar attribution, waterfall ROI, heatmap pair</td><td>28/5/2026</td></tr>
+    <tr><td>8. Regression</td><td>Logistic, marginal contribution, pseudo-R², elasticity</td><td>28/5/2026</td></tr>
+    <tr><td>9. Dashboard (4 panel)</td><td>Overview, Attribution, Journey, Budget slider</td><td>28/5/2026</td></tr>
+    <tr><td>10. Application</td><td>App đóng gói</td><td>29–31/5/2026</td></tr>
+    <tr><td>11. Paper Writing</td><td>Viết paper hoàn chỉnh</td><td>1–6/6/2026</td></tr>
+  </tbody>
+</table>
+
+<div class="callout good">
+<strong>Cập nhật theo plan mới (<code>ProjectPlanning_DAP_new.pdf</code>):</strong> Plan đã chính thức chuyển sang dùng <em>Multi-Touch Attribution dataset</em> (Kaggle, vivekparasharr) làm dataset duy nhất — đúng file <code>multi_touch_attribution_data.csv</code> đang dùng. Online Shoppers Intention + Online Retail đã được loại khỏi plan. RQ3 dùng giả định <strong>uniform $100/conversion</strong> thay vì sample doanh thu thật từ Online Retail.
+</div>
+
+<!-- ============================================================== -->
+<h2 id="sec2">2. Mô tả file <code>multi_touch_attribution_data.csv</code></h2>
+
+<div class="grid grid-4">
+  <div class="kpi"><div class="v">10,000</div><div class="l">rows (touchpoints)</div></div>
+  <div class="kpi"><div class="v">2,847</div><div class="l">unique users</div></div>
+  <div class="kpi"><div class="v">5</div><div class="l">columns (raw)</div></div>
+  <div class="kpi"><div class="v">2</div><div class="l">days span</div></div>
+  <div class="kpi"><div class="v">6</div><div class="l">channels</div></div>
+  <div class="kpi"><div class="v">6</div><div class="l">campaigns (incl. "-")</div></div>
+  <div class="kpi"><div class="v">49.4%</div><div class="l">row-level Yes</div></div>
+  <div class="kpi"><div class="v">83.6%</div><div class="l">user-level Yes (≥1 Yes)</div></div>
+</div>
+
+<h3>2.1 Schema (raw)</h3>
+<table class="schema">
+  <thead><tr><th>Column</th><th>Type</th><th>Mô tả &amp; ví dụ</th><th>Missing</th></tr></thead>
+  <tbody>
+    <tr><td>User ID</td><td>int64</td><td>ID người dùng. VD <code>83281</code>. 2,847 user unique, mỗi user trung bình 3.5 touch (max 12).</td><td>0</td></tr>
+    <tr><td>Timestamp</td><td>string</td><td>Thời điểm touch, format <code>YYYY-MM-DD HH:MM:SS</code>. Range: <strong>2025-02-10 00:00:22 → 2025-02-11 23:59:58</strong> (đúng 2 ngày).</td><td>0</td></tr>
+    <tr><td>Channel</td><td>string</td><td>Kênh tiếp xúc. 6 giá trị: Direct Traffic, Display Ads, Email, Referral, Search Ads, Social Media.</td><td>0</td></tr>
+    <tr><td>Campaign</td><td>string</td><td>Tên chiến dịch. 5 chiến dịch + <code>"-"</code> (3,131 dòng — toàn bộ Direct Traffic + một phần các kênh khác).</td><td>0 (nhưng "-" là missing trá hình)</td></tr>
+    <tr><td>Conversion</td><td>string</td><td>Yes / No <strong>tại mức touch</strong> (không phải mức journey).</td><td>0</td></tr>
+  </tbody>
+</table>
+
+<h3>2.2 Phân phối Channel</h3>
+<table>
+  <thead><tr><th>Channel</th><th style="width:90px">Rows</th><th style="width:90px">Share</th><th>Bar</th><th style="width:120px">Conv. rate (row)</th></tr></thead>
+  <tbody>
+    <tr><td>Direct Traffic</td><td>1,721</td><td>17.2%</td><td><div class="bar"><span style="width:17.2%"></span></div></td><td>49.6%</td></tr>
+    <tr><td>Referral</td><td>1,685</td><td>16.9%</td><td><div class="bar"><span style="width:16.9%"></span></div></td><td>49.9%</td></tr>
+    <tr><td>Display Ads</td><td>1,669</td><td>16.7%</td><td><div class="bar"><span style="width:16.7%"></span></div></td><td>49.6%</td></tr>
+    <tr><td>Social Media</td><td>1,662</td><td>16.6%</td><td><div class="bar"><span style="width:16.6%"></span></div></td><td>49.3%</td></tr>
+    <tr><td>Email</td><td>1,654</td><td>16.5%</td><td><div class="bar"><span style="width:16.5%"></span></div></td><td>50.2%</td></tr>
+    <tr><td>Search Ads</td><td>1,609</td><td>16.1%</td><td><div class="bar"><span style="width:16.1%"></span></div></td><td>48.0%</td></tr>
+  </tbody>
+</table>
+
+<h3>2.3 Phân phối Campaign</h3>
+<table>
+  <thead><tr><th>Campaign</th><th>Rows</th><th>Ghi chú</th></tr></thead>
+  <tbody>
+    <tr><td>"-"</td><td>3,131</td><td>Toàn bộ 1,721 dòng Direct Traffic + 1,410 dòng các kênh khác → bị xử lý thành <code>None</code> kèm flag <code>campaign_missing</code>.</td></tr>
+    <tr><td>New Product Launch</td><td>1,416</td><td></td></tr>
+    <tr><td>Retargeting</td><td>1,379</td><td></td></tr>
+    <tr><td>Brand Awareness</td><td>1,378</td><td></td></tr>
+    <tr><td>Winter Sale</td><td>1,372</td><td></td></tr>
+    <tr><td>Discount Offer</td><td>1,324</td><td></td></tr>
+  </tbody>
+</table>
+
+<h3>2.4 Cấu trúc journey (sau khi sort theo user_id, timestamp)</h3>
+<div class="grid grid-3">
+  <div class="kpi"><div class="v">3.5</div><div class="l">trung bình touch/user</div></div>
+  <div class="kpi"><div class="v">12</div><div class="l">max touch/user</div></div>
+  <div class="kpi"><div class="v">343</div><div class="l">user 1-touch (không có journey)</div></div>
+  <div class="kpi"><div class="v">2,381</div><div class="l">user có ≥1 Yes</div></div>
+  <div class="kpi"><div class="v">1,410</div><div class="l">user có Yes ở touch cuối</div></div>
+  <div class="kpi"><div class="v">9.3 giờ</div><div class="l">trung bình giữa 2 touch</div></div>
+</div>
+
+<h3>2.5 Ví dụ một journey thật trong dữ liệu</h3>
+<pre>user_id 86889 (12 touch trong 2 ngày)
+1  2025-02-10 03:29:34  Social Media   New Product Launch  Yes
+2  2025-02-10 04:35:21  Email          Discount Offer      Yes
+3  2025-02-10 05:16:57  Social Media   New Product Launch  Yes
+4  2025-02-10 06:42:22  Direct Traffic  -                  Yes
+5  2025-02-10 12:19:22  Search Ads     Brand Awareness     No
+...
+12 2025-02-11 23:46:46  Display Ads    New Product Launch  Yes</pre>
+<p class="muted">Quan sát: cột <code>Conversion</code> được gán <em>tại mỗi touch</em>, không phải tại lần mua duy nhất ở cuối journey. Đây là điểm khác biệt căn bản so với dữ liệu attribution chuẩn (thường chỉ có 1 conversion event/journey).</p>
+
+<!-- ============================================================== -->
+<h2 id="sec3">3. Đánh giá: CSV này có đủ cho nhóm dùng để phân tích không?</h2>
+
+<div class="callout warn">
+<div class="verdict">⚖️ Kết luận tổng:
+<span class="tag good">ĐÚNG dataset mà plan PDF mới chỉ định</span>
+<span class="tag good">Đủ về STRUCTURE để chạy toàn bộ attribution + logistic regression</span>
+<span class="tag warn">SIGNAL yếu giữa Channel ↔ Conversion — cần khai báo là <em>finding/limitation</em> trong paper</span>
+</div>
+</div>
+
+<h3>3.1 Mặt được – những điểm CSV này phù hợp với đề tài</h3>
+<ul>
+  <li><span class="tag good">+</span> <strong>Cột chuẩn cho multi-touch attribution</strong>: có <code>User ID</code>, <code>Timestamp</code>, <code>Channel</code>, <code>Conversion</code> — đủ 4 trường tối thiểu để dựng journey và chạy First / Last / Linear / Markov.</li>
+  <li><span class="tag good">+</span> <strong>Journey nhiều touch thật sự</strong>: 87.9% user có ≥2 touch, max 12. Online Shoppers (dataset trong plan) <em>không</em> có cấu trúc journey kiểu này — mỗi dòng là 1 session độc lập, không có user_id chung.</li>
+  <li><span class="tag good">+</span> <strong>10,000 dòng / 2,847 user</strong>: đủ lớn để chạy logistic regression, bootstrap, KL-divergence.</li>
+  <li><span class="tag good">+</span> <strong>Không thiếu giá trị NaN</strong>, không trùng lặp full-row, timestamp parse được 100%.</li>
+  <li><span class="tag good">+</span> <strong>Channel = 6 nhóm clean</strong> đúng kiểu “traffic segment” mà plan muốn.</li>
+</ul>
+
+<h3>3.2 Mặt yếu – tại sao chỉ dùng CSV này thôi là KHÔNG đủ</h3>
+
+<div class="panel">
+<h4>(a) Conversion gần như độc lập với Channel — dữ liệu có vẻ <strong>random / synthetic</strong></h4>
+<p>Chi-square test (tự tính): <code>χ² = 1.92</code>, df = 5 → ngưỡng tới hạn 0.05 là 11.07. <strong>Không bác bỏ được H₀</strong>: Channel độc lập với Conversion. Tỷ lệ Yes của tất cả channel đều nằm trong khoảng 48–50.2%.</p>
+<table>
+  <thead><tr><th>Channel</th><th>First-touch share (converted users)</th><th>Last-touch share</th><th>Linear share</th></tr></thead>
+  <tbody>
+    <tr><td>Direct Traffic</td><td>17.3%</td><td>17.8%</td><td>17.1%</td></tr>
+    <tr><td>Display Ads</td>  <td>18.0%</td><td>16.8%</td><td>17.1%</td></tr>
+    <tr><td>Referral</td>     <td>17.1%</td><td>16.1%</td><td>16.7%</td></tr>
+    <tr><td>Social Media</td> <td>16.3%</td><td>16.1%</td><td>16.7%</td></tr>
+    <tr><td>Email</td>        <td>15.7%</td><td>16.5%</td><td>16.3%</td></tr>
+    <tr><td>Search Ads</td>   <td>15.6%</td><td>16.6%</td><td>16.0%</td></tr>
+  </tbody>
+</table>
+<p class="muted">Mọi mô hình attribution sẽ cho ra phân phối ~16–18%, gần như đều. Nghĩa là RQ1 (“channel nào đóng góp nhiều nhất?”) <em>không có câu trả lời business</em> trên dataset này, và RQ2/RQ3 sẽ không tạo được story khác biệt.</p>
+</div>
+
+<div class="panel">
+<h4>(b) Schema ĐÃ KHỚP với plan PDF mới — đối chiếu cụ thể</h4>
+<table>
+  <thead><tr><th>Plan PDF mới yêu cầu</th><th>CSV thực tế</th><th>Trạng thái</th></tr></thead>
+  <tbody>
+    <tr><td>10,000 rows × 5 cols, 2,847 unique users, 6 channels</td>
+        <td>10,000 × 5, 2,847 user, 6 channel</td>
+        <td><span class="tag good">khớp 100%</span></td></tr>
+    <tr><td>Fields: User ID, Timestamp, Channel, Campaign, Conversion</td>
+        <td>Y nguyên 5 trường</td>
+        <td><span class="tag good">khớp 100%</span></td></tr>
+    <tr><td>5 campaigns + "none": Brand Awareness, Discount Offer, Retargeting, Winter Sale, New Product Launch</td>
+        <td>5 campaign + "-" (3,131 dòng)</td>
+        <td><span class="tag good">khớp (placeholder "-" đã clean thành <code>no_campaign</code>)</span></td></tr>
+    <tr><td>Sanity check: 2,381 users có ≥1 Conversion = Yes</td>
+        <td>2,381 user-level Yes</td>
+        <td><span class="tag good">khớp chính xác</span></td></tr>
+    <tr><td>Mean 3.51 touch/user, max 12, min 1</td>
+        <td>Mean 3.5, max 12, 343 user 1-touch</td>
+        <td><span class="tag good">khớp</span></td></tr>
+    <tr><td>Conversion rate: Email 50.2%, Referral 49.9%, Display 49.6%, Direct 49.6%, SM 49.3%, Search 48.0%</td>
+        <td>Trùng đến 1 chữ số thập phân</td>
+        <td><span class="tag good">khớp 100%</span></td></tr>
+  </tbody>
+</table>
+<p class="muted">Như vậy plan mới được viết <em>dựa chính</em> trên dataset CSV này (kể cả số liệu summary 83.6% user-level conversion rate, Display Ads first-touch dẫn đầu, Direct Traffic last-touch dẫn đầu). Không còn schema mismatch nào.</p>
+</div>
+
+<div class="panel">
+<h4>(c) Vấn đề kỹ thuật khác</h4>
+<ul>
+  <li><strong>Time range chỉ 2 ngày</strong> (10 &amp; 11/02/2025): không phân tích được seasonal, weekly pattern, không có Month/Weekend slicer như Panel 1 dashboard trong plan.</li>
+  <li><strong>Không có doanh thu</strong>: RQ3 cần Δrevenue và ROI/channel — bắt buộc phải sample từ Online Retail (như plan) hoặc giả lập revenue per conversion.</li>
+  <li><strong>Conversion logic mơ hồ</strong>: 1,410/2,847 user (49%) có Yes ở touch cuối, nhưng 36% user có ≥2 Yes — không rõ Yes là “mua hàng” hay “tương tác thành công”. Cần định nghĩa lại trong paper.</li>
+  <li><strong>3,131 dòng (31%) có Campaign = "-"</strong>: với Direct Traffic là hợp lý (no campaign), nhưng 1,410 dòng còn lại là kênh khác mà thiếu campaign — cần coi là missing.</li>
+  <li><strong>343 user 1-touch</strong>: không có “journey” để attribute → phải lọc hoặc gắn “Single-Touch” group riêng.</li>
+</ul>
+</div>
+
+<h3>3.3 Hướng đi đã chốt theo plan mới</h3>
+<div class="panel">
+  <h4>Single path <span class="tag good">CONFIRMED</span></h4>
+  <p><strong>Dataset duy nhất:</strong> <code>multi_touch_attribution_data.csv</code> (đã clean → <code>multi_touch_attribution_data_cleaned.csv</code>).</p>
+  <p><strong>Revenue:</strong> dùng giả định <em>uniform $100/conversion</em> + sensitivity ±20% (đúng spec plan mới — không cần Online Retail).</p>
+  <p><strong>Conversion target:</strong> <em>journey-level</em> (user có ≥1 Yes) → khớp đúng con số sanity check 2,381 trong plan.</p>
+  <p><strong>Filter cho attribution:</strong> giữ toàn bộ 2,847 user, nhưng khi compute Linear attribution thì 343 user 1-touch chỉ đóng góp vào 1 channel (1/1 credit).</p>
+</div>
+
+<div class="callout good">
+<strong>Điểm cần khai báo rõ trong paper (Limitations):</strong>
+<ul>
+  <li>Channel ↔ Conversion <strong>gần như độc lập</strong> (χ² = 1.92, p &gt; 0.85): mọi model attribution sẽ cho ra phân phối ~16–18%. Đây không phải failure — chính nó là <em>finding</em> motivate việc benchmark bằng logistic regression và thử Markov chain để có signal cao hơn từ <em>thứ tự</em> chứ không chỉ <em>sự hiện diện</em> của kênh.</li>
+  <li>Time range chỉ <strong>2 ngày</strong> → không phân tích được seasonal/weekly/monthly pattern; loại slicer Month khỏi dashboard.</li>
+  <li><strong>$100/conversion uniform</strong> là giả định convenience, không phải doanh thu thật → mọi Δrevenue chỉ là comparative, không phải absolute forecast.</li>
+  <li>Conversion mức touch (49.4%) bất thường cao → định nghĩa lại: "Yes" = "tương tác chuyển đổi tại touch đó", còn "user converted" = "có ≥1 touch Yes trong journey".</li>
+</ul>
+</div>
+
+<!-- ============================================================== -->
+<h2 id="sec4">4. Plan chi tiết để hoàn thành paper</h2>
+
+<p>Bám 11 section của plan PDF, nhưng đã viết lại cụ thể cho dataset <code>multi_touch_attribution_data.csv</code> (đã clean) làm dataset chính.</p>
+
+<h3>Phase 1 — Setup &amp; framing (18–19/5/2026)</h3>
+<table>
+  <thead><tr><th>#</th><th>Task</th><th>Output</th><th>Owner gợi ý</th></tr></thead>
+  <tbody>
+    <tr><td>1.1</td><td>Viết lại Section 1–3 paper bám CSV thực tế (10k touch, 2,847 user, 2 ngày).</td><td><code>paper/01_intro.md</code></td><td>Nhan</td></tr>
+    <tr><td>1.2</td><td>Định nghĩa lại Conversion: dùng <em>journey-level</em> (user có ≥1 Yes) làm target cho attribution, KHÔNG dùng row-level.</td><td>Convention doc trong README</td><td>Khang</td></tr>
+    <tr><td>1.3</td><td>Khẳng định limitation: 2 ngày, signal yếu — đưa vào abstract.</td><td>Section “Scope &amp; Limitations”</td><td>Dat</td></tr>
+  </tbody>
+</table>
+
+<h3>Phase 2 — Data prep (20/5/2026)</h3>
+<table>
+  <thead><tr><th>#</th><th>Task</th><th>Output</th></tr></thead>
+  <tbody>
+    <tr><td>2.1</td><td>Đã làm: chạy <code>clean_multi_touch.py</code> → <code>multi_touch_attribution_data_cleaned.csv</code></td><td>15 cột (xem Section 5)</td></tr>
+    <tr><td>2.2</td><td>Filter rules cho phân tích: bỏ user 1-touch khỏi attribution analysis (giữ trong descriptive); coi <code>Campaign="no_campaign"</code> trên kênh ≠ Direct là missing.</td><td><code>data/journeys.parquet</code></td></tr>
+    <tr><td>2.3</td><td>Build <strong>channel sequence</strong> per user: list channels sắp theo timestamp. Lưu thêm sequence string (e.g. "Email>Direct&gt;Search").</td><td>cột <code>journey_path</code></td></tr>
+    <tr><td>2.4</td><td>Map Campaign → 5 nhóm + “None” → dùng làm secondary segment.</td><td><code>channels.py</code></td></tr>
+    <tr><td>2.5</td><td>Gán revenue = <strong>$100/conversion</strong> uniform (đúng plan mới). Lưu thêm 2 cột <code>revenue_low = $80</code> &amp; <code>revenue_high = $120</code> cho sensitivity ±20%.</td><td><code>data/journeys_with_revenue.parquet</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Phase 3 — SQL analysis (20–24/5/2026)</h3>
+<p>Import cleaned CSV vào SQLite/DuckDB. 4 query bắt buộc:</p>
+<pre>-- Q1: First-touch conversion rate per channel
+SELECT first_channel,
+       COUNT(*) AS journeys,
+       SUM(journey_converted) AS conv,
+       1.0*SUM(journey_converted)/COUNT(*) AS cr
+FROM   journeys
+GROUP  BY first_channel;
+
+-- Q2: Last-touch credit per channel (with revenue)
+SELECT last_channel,
+       COUNT(*) FILTER (WHERE journey_converted) AS conversions,
+       SUM(revenue) AS attributed_revenue
+FROM   journeys
+GROUP  BY last_channel;
+
+-- Q3: Linear attribution (explode path then 1/N credit)
+WITH exploded AS (
+  SELECT user_id, channel,
+         1.0/n_touches AS credit,
+         journey_converted, revenue
+  FROM   touches_cleaned
+  WHERE  n_touches &gt; 1
+)
+SELECT channel, SUM(credit) AS linear_credit,
+       SUM(credit*revenue) AS linear_revenue
+FROM   exploded
+WHERE  journey_converted
+GROUP  BY channel;
+
+-- Q4: Top conversion paths
+SELECT journey_path, COUNT(*) AS n
+FROM   journeys
+WHERE  journey_converted
+GROUP  BY journey_path
+ORDER  BY n DESC
+LIMIT  10;</pre>
+
+<h3>Phase 4 — Python analysis (20–24/5/2026) — đúng 4 notebook theo plan mới</h3>
+<ol>
+  <li><strong>01_attribution_basic.ipynb</strong> – implement <code>first_touch()</code>, <code>last_touch()</code>, <code>linear()</code> trên 2,381 converted journey. Output: bảng <code>attribution_share[channel × model]</code>, side-by-side bar chart, summary table.</li>
+  <li><strong>02_logistic_benchmark.ipynb</strong> – one-hot encode <code>Channel</code>; train logistic regression dự đoán <code>Conversion</code>; trích hệ số như attribution weight; báo cáo Pseudo-R² (McFadden) + AUC + odds ratio table với 95% CI (statsmodels). Spearman ρ giữa ranking heuristic vs regression.</li>
+  <li><strong>03_attribution_markov.ipynb</strong> <span class="tag warn">stretch</span> – transition matrix 6×6 + virtual start/end (NetworkX); removal-effect; so sánh với Linear.</li>
+  <li><strong>04_simulation.ipynb</strong> – 3 scenario:
+    <ul>
+      <li><strong>S0 (Equal split):</strong> chia đều 100/6 mỗi channel — baseline.</li>
+      <li><strong>S1 (Conversion-rate weighted):</strong> budget tỉ lệ với conversion rate quan sát của từng kênh.</li>
+      <li><strong>S2 (Attribution weighted):</strong> budget tỉ lệ với Linear attribution share.</li>
+    </ul>
+    Revenue: $100/conversion uniform; sensitivity ±20%. Output: waterfall chart Δrevenue, ROI table per channel.</li>
+</ol>
+<p class="muted">Lưu ý: notebook EDA và bootstrap đã bị loại khỏi plan mới. EDA tích hợp vào 01; bootstrap CI thay bằng pairwise KL-divergence (optional trong 02).</p>
+
+<h4>Tools (chốt từ plan mới)</h4>
+<p><span class="pill">pandas</span> <span class="pill">numpy</span> <span class="pill">scikit-learn</span> <span class="pill">statsmodels</span> <span class="pill">networkx</span> <span class="pill">matplotlib</span> <span class="pill">seaborn</span></p>
+
+<h3>Phase 5 — Visualization (28/5/2026)</h3>
+<ul>
+  <li>Sankey (Plotly): channel→channel transitions trên top 1,000 converted journey.</li>
+  <li>Side-by-side bar: First / Last / Linear share, kèm 95% CI bootstrap.</li>
+  <li>Heatmap 6×6: co-occurrence channel pair trong journey converted.</li>
+  <li>Waterfall: Δrevenue theo scenario (S0 baseline → S1 → S2).</li>
+  <li>Boxplot: n_touches của converted vs not-converted.</li>
+</ul>
+
+<h3>Phase 6 — Regression analysis (28/5/2026)</h3>
+<p>Dùng <code>statsmodels.Logit</code> để có CI rõ ràng cho từng odds ratio. Variables:</p>
+<table>
+  <thead><tr><th>Biến</th><th>Loại</th><th>Mục đích</th></tr></thead>
+  <tbody>
+    <tr><td><code>has_email</code>, <code>has_search_ads</code>, …</td><td>binary</td><td>Hiện diện kênh trong journey</td></tr>
+    <tr><td><code>first_channel_*</code></td><td>one-hot</td><td>Đo first-touch effect</td></tr>
+    <tr><td><code>last_channel_*</code></td><td>one-hot</td><td>Đo last-touch effect</td></tr>
+    <tr><td><code>n_touches</code></td><td>numeric</td><td>Độ dài journey</td></tr>
+    <tr><td><code>journey_duration_h</code></td><td>numeric</td><td>Khoảng thời gian từ touch đầu→cuối</td></tr>
+  </tbody>
+</table>
+<p>Output: pseudo-R² (McFadden), AUC trên test 30%, marginal effect = exp(β)−1, budget elasticity từ avg marginal effect.</p>
+
+<h3>Phase 7 — Dashboard (28/5/2026)</h3>
+<p>Streamlit (đơn giản, deploy nhanh) hoặc Power BI (đẹp hơn cho demo). 4 panel y như plan, dùng cleaned CSV làm nguồn.</p>
+
+<h3>Phase 8 — Application (29–31/5/2026)</h3>
+<p>Đóng gói pipeline: 1 lệnh CLI <code>python run_attribution.py --input cleaned.csv --revenue-source online_retail.xlsx --out report/</code> → sinh ra báo cáo + dashboard link.</p>
+
+<h3>Phase 9 — Paper writing (1–6/6/2026)</h3>
+<table>
+  <thead><tr><th>Section</th><th>Người viết chính</th><th>Yêu cầu trang</th></tr></thead>
+  <tbody>
+    <tr><td>Abstract, Intro, Related Work</td><td>Nhan</td><td>1.5–2 trang</td></tr>
+    <tr><td>Data &amp; Methodology</td><td>Khang</td><td>2 trang (bao gồm cleaning report bản rút gọn)</td></tr>
+    <tr><td>Attribution Results (RQ1, RQ2)</td><td>Khang + Nhan</td><td>2 trang + 4 figure</td></tr>
+    <tr><td>Budget Simulation (RQ3)</td><td>Dat</td><td>1.5 trang + waterfall + sensitivity</td></tr>
+    <tr><td>Discussion, Limitations, Conclusion</td><td>Dat</td><td>1 trang</td></tr>
+    <tr><td>References, Appendix</td><td>Cả nhóm</td><td></td></tr>
+  </tbody>
+</table>
+
+<h3>Sanity checks (giữ từ plan)</h3>
+<ul>
+  <li>Tổng attribution % của mỗi model = 100%.</li>
+  <li>Tổng attributed conversions = 2,381 (số user có ≥1 Conversion = Yes) — khớp với sanity check trong plan mới.</li>
+  <li>Không channel nào âm, không NaN.</li>
+  <li><code>random_state=42</code> ở mọi notebook.</li>
+</ul>
+
+<!-- ============================================================== -->
+<h2 id="sec5">5. Báo cáo cleaning – đã làm gì trên file CSV</h2>
+
+<p>Script: <code>clean_multi_touch.py</code> &nbsp;·&nbsp; Input: <code>multi_touch_attribution_data.csv</code> (10,000 × 5) &nbsp;·&nbsp; Output: <code>multi_touch_attribution_data_cleaned.csv</code> (10,000 × 15) &nbsp;·&nbsp; Log JSON: <code>cleaning_report.json</code>.</p>
+
+<div class="grid grid-4">
+  <div class="kpi"><div class="v">10,000 → 10,000</div><div class="l">rows in → out</div></div>
+  <div class="kpi"><div class="v">5 → 15</div><div class="l">cols in → out</div></div>
+  <div class="kpi"><div class="v">0</div><div class="l">rows mất do parse fail</div></div>
+  <div class="kpi"><div class="v">0</div><div class="l">duplicates loại</div></div>
+</div>
+
+<h3>5.1 Các bước đã chạy (theo thứ tự)</h3>
+<table>
+  <thead><tr><th style="width:32px">#</th><th>Bước</th><th>Chi tiết</th><th>Kết quả</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><strong>Strip whitespace</strong></td>
+        <td><code>.str.strip()</code> trên các cột object</td>
+        <td>0 ô bị trim (dữ liệu vốn sạch về whitespace)</td></tr>
+    <tr><td>2</td><td><strong>Rename cột → snake_case</strong></td>
+        <td>User ID→user_id, Timestamp→timestamp, Channel→channel, Campaign→campaign, Conversion→conversion</td>
+        <td>Cho thuận lợi khi import vào SQL/Python</td></tr>
+    <tr><td>3</td><td><strong>Parse timestamp</strong></td>
+        <td><code>pd.to_datetime(errors='coerce')</code></td>
+        <td>0 dòng fail. Range 2025-02-10 00:00:22 → 2025-02-11 23:59:58</td></tr>
+    <tr><td>4</td><td><strong>Chuẩn hoá campaign placeholder</strong></td>
+        <td>"-" / "" / "NA" / "null" → <code>"no_campaign"</code>; thêm cờ boolean <code>campaign_missing</code></td>
+        <td>3,131 dòng được flag (1,721 Direct Traffic + 1,410 khác)</td></tr>
+    <tr><td>5</td><td><strong>Drop duplicates</strong></td>
+        <td>full-row, sau đó (user_id, timestamp)</td>
+        <td>0 duplicates ở cả hai mức</td></tr>
+    <tr><td>6</td><td><strong>Encode conversion</strong></td>
+        <td>Yes→1, No→0; cast int</td>
+        <td>0 dòng unmappable</td></tr>
+    <tr><td>7</td><td><strong>Sort</strong></td>
+        <td>Theo (user_id, timestamp) để dựng journey</td>
+        <td>Bắt buộc cho các bước derive bên dưới</td></tr>
+    <tr><td>8</td><td><strong>Derive journey features</strong></td>
+        <td>9 cột mới:
+        <code>touch_position</code>, <code>n_touches</code>, <code>is_first_touch</code>,
+        <code>is_last_touch</code>, <code>minutes_since_prev</code>,
+        <code>journey_converted</code>, <code>date</code>, <code>hour</code>, <code>dow</code></td>
+        <td>Sẵn sàng cho attribution + EDA</td></tr>
+  </tbody>
+</table>
+
+<h3>5.2 Schema sau khi clean (15 cột)</h3>
+<table class="schema">
+  <thead><tr><th>Cột</th><th>Kiểu</th><th>Mô tả</th></tr></thead>
+  <tbody>
+    <tr><td>user_id</td><td>int</td><td>ID người dùng</td></tr>
+    <tr><td>timestamp</td><td>datetime</td><td>Thời điểm touch</td></tr>
+    <tr><td>channel</td><td>category</td><td>1 trong 6 channel</td></tr>
+    <tr><td>campaign</td><td>category</td><td>1 trong 5 campaign hoặc <code>"no_campaign"</code> (placeholder cố tình KHÔNG dùng "None" để pandas không auto-convert thành NaN)</td></tr>
+    <tr><td>conversion</td><td>int (0/1)</td><td>Conversion mức touch</td></tr>
+    <tr><td>campaign_missing</td><td>bool</td><td>True nếu campaign là placeholder "-"</td></tr>
+    <tr><td>touch_position</td><td>int</td><td>Thứ tự touch trong journey (1..N)</td></tr>
+    <tr><td>n_touches</td><td>int</td><td>Tổng số touch của user</td></tr>
+    <tr><td>is_first_touch</td><td>bool</td><td>Touch đầu tiên</td></tr>
+    <tr><td>is_last_touch</td><td>bool</td><td>Touch cuối cùng</td></tr>
+    <tr><td>minutes_since_prev</td><td>float</td><td>Phút từ touch trước (NaN nếu touch đầu)</td></tr>
+    <tr><td>journey_converted</td><td>bool</td><td>True nếu user có ≥1 Yes trong journey</td></tr>
+    <tr><td>date</td><td>str (YYYY-MM-DD)</td><td>Ngày của touch</td></tr>
+    <tr><td>hour</td><td>int (0–23)</td><td>Giờ trong ngày</td></tr>
+    <tr><td>dow</td><td>str</td><td>Thứ trong tuần (Monday..Sunday)</td></tr>
+  </tbody>
+</table>
+
+<h3>5.3 Phân phối journey length sau khi clean</h3>
+<table>
+  <thead><tr><th>n_touches</th><th>Users</th><th>Bar</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>343</td><td><div class="bar"><span style="width:57.6%"></span></div></td></tr>
+    <tr><td>2</td><td>584</td><td><div class="bar"><span style="width:98.0%"></span></div></td></tr>
+    <tr><td>3</td><td>595</td><td><div class="bar"><span style="width:100%"></span></div></td></tr>
+    <tr><td>4</td><td>563</td><td><div class="bar"><span style="width:94.5%"></span></div></td></tr>
+    <tr><td>5</td><td>383</td><td><div class="bar"><span style="width:64.3%"></span></div></td></tr>
+    <tr><td>6</td><td>224</td><td><div class="bar"><span style="width:37.6%"></span></div></td></tr>
+    <tr><td>7</td><td>92</td><td><div class="bar"><span style="width:15.4%"></span></div></td></tr>
+    <tr><td>8</td><td>37</td><td><div class="bar"><span style="width:6.2%"></span></div></td></tr>
+    <tr><td>9</td><td>16</td><td><div class="bar"><span style="width:2.7%"></span></div></td></tr>
+    <tr><td>10–12</td><td>10</td><td><div class="bar"><span style="width:1.7%"></span></div></td></tr>
+  </tbody>
+</table>
+
+<h3>5.4 Điều CHƯA xử lý (cố ý để lại cho phase phân tích)</h3>
+<ul>
+  <li><strong>Không drop 343 user 1-touch</strong>: để giữ tính toàn vẹn dữ liệu. Khi chạy attribution, filter <code>n_touches ≥ 2</code> tại notebook.</li>
+  <li><strong>Không inject revenue</strong>: để Phase 2.5 (sample từ Online Retail) làm theo plan.</li>
+  <li><strong>Không thay đổi cột Conversion mức touch</strong>: chỉ phái sinh <code>journey_converted</code>. Bạn vẫn có cả 2 góc nhìn (touch-level vs journey-level) cho EDA.</li>
+  <li><strong>Không loại 1,410 dòng campaign-missing trên kênh ≠ Direct</strong>: chỉ flag — quyết định drop/keep tuỳ phân tích.</li>
+</ul>
+
+<!-- ============================================================== -->
+<h2 id="sec6">6. File đã xuất ra</h2>
+<table>
+  <thead><tr><th>File</th><th>Mô tả</th></tr></thead>
+  <tbody>
+    <tr><td><code>multi_touch_attribution_data_cleaned.csv</code></td><td>Dataset cleaned 10,000 × 15 — input cho mọi phase Python/SQL sau này.</td></tr>
+    <tr><td><code>cleaning_report.json</code></td><td>Log từng bước cleaning với số liệu before/after — đính kèm phụ lục paper.</td></tr>
+    <tr><td><code>clean_multi_touch.py</code></td><td>Script reproducible — chạy lại bất cứ lúc nào.</td></tr>
+    <tr><td><code>DAP391_Analysis_Report.html</code></td><td>Chính là file bạn đang đọc.</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+<strong>Quick start cho team:</strong>
+<pre>import pandas as pd
+df = pd.read_csv("multi_touch_attribution_data_cleaned.csv",
+                 parse_dates=["timestamp"])
+journeys = (df.sort_values(["user_id","timestamp"])
+              .groupby("user_id")
+              .agg(path=("channel", lambda s: ">".join(s)),
+                   first_channel=("channel","first"),
+                   last_channel=("channel","last"),
+                   n_touches=("touch_position","max"),
+                   converted=("journey_converted","first"))
+              .reset_index())
+# ready for First/Last/Linear attribution</pre>
+</div>
+
+<p class="muted" style="text-align:center;margin-top:48px">DAP391m – Group 1 · Updated 2026-05-25 (theo <code>ProjectPlanning_DAP_new.pdf</code>)</p>
+</main>
+</body>
+</html>
