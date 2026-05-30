@@ -5,7 +5,7 @@ CREATE DATABASE DAP_Campaign_Attribution;
 Which social media channel contributes the most to
 sales conversions compared to other channels?*/
 
-/*FIRST TOUCH */
+/* FIRST TOUCH ATTRIBUTION */
 WITH ordered_journey AS (
     SELECT 
         User_ID, 
@@ -16,10 +16,8 @@ WITH ordered_journey AS (
             PARTITION BY User_ID 
             ORDER BY Timestamp ASC
         ) AS rn
-    FROM data_touchpoints -- Thay ??i ? ?ây
+    FROM data_touchpoints -- Changed here to data_touchpoints
 ),
-
-
 
 first_touch AS (
     SELECT User_ID, Channel
@@ -27,7 +25,7 @@ first_touch AS (
     WHERE rn = 1 
       AND User_ID IN (
           SELECT DISTINCT User_ID 
-          FROM data_touchpoints -- Thay ??i ? ?ây
+          FROM data_touchpoints -- Changed here to data_touchpoints
           WHERE Conversion = 1
       )
 )
@@ -39,9 +37,7 @@ FROM first_touch
 GROUP BY Channel
 ORDER BY conversion_share_pct DESC;
 
-
-
-/* LAST TOUCH*/
+/* LAST TOUCH ATTRIBUTION */
 WITH ordered_journey AS (
     SELECT 
         User_ID, 
@@ -50,7 +46,7 @@ WITH ordered_journey AS (
         Timestamp,
         ROW_NUMBER() OVER (
             PARTITION BY User_ID 
-            ORDER BY Timestamp DESC -- Khác bi?t ? ?ây: S?p x?p gi?m d?n ?? l?y ?i?m ch?m cu?i
+            ORDER BY Timestamp DESC -- Difference here: Sort descending to get the last touchpoint
         ) AS rn
     FROM data_touchpoints
 ),
@@ -58,7 +54,7 @@ last_touch AS (
     SELECT User_ID, Channel
     FROM ordered_journey
     WHERE rn = 1 
-      AND Conversion = 1 -- Ch? quan tâm nh?ng hành trình có sinh ra chuy?n ??i
+      AND Conversion = 1 -- Only focus on journeys that resulted in a conversion
 )
 SELECT 
     Channel,
@@ -68,10 +64,9 @@ FROM last_touch
 GROUP BY Channel
 ORDER BY conversion_share_pct DESC;
 
-
-/* LINEAR ATTRIBUTE*/
+/* LINEAR ATTRIBUTION */
 WITH user_paths AS (
-    -- B??c 1: ??m t?ng s? ?i?m ch?m (touches) c?a m?i user ?ã mua hàng
+    -- Step 1: Count total touchpoints for each converted user
     SELECT 
         User_ID, 
         Channel,
@@ -84,14 +79,14 @@ WITH user_paths AS (
     )
 ),
 linear_credit AS (
-    -- B??c 2: Chia ??u ?i?m (1 chia cho t?ng s? ?i?m ch?m)
+    -- Step 2: Distribute credit (1 divided by total touchpoints)
     SELECT 
         User_ID, 
         Channel, 
         1.0 / total_touches AS credit
     FROM user_paths
 )
--- B??c 3: T?ng h?p ?i?m cho t?ng kênh
+-- Step 3: Aggregate credit for each channel
 SELECT 
     Channel,
     ROUND(SUM(credit), 2) AS total_credit,
@@ -100,16 +95,12 @@ FROM linear_credit
 GROUP BY Channel
 ORDER BY attribution_share_pct DESC;
 
-/* T? L? CHUY?N ??I */
+/* CONVERSION RATE PER CHANNEL */
 SELECT 
     Channel,
     COUNT(*) AS total_visits,
-    SUM(CAST(Conversion AS INT)) AS conversions, -- ?ã thêm CAST ?? s?a l?i BIT
+    SUM(CAST(Conversion AS INT)) AS conversions, -- Added CAST to fix BIT data type issue
     ROUND(AVG(CAST(Conversion AS FLOAT)) * 100, 2) AS conversion_rate_pct
 FROM multi_touch_attribution_data
 GROUP BY Channel
 ORDER BY conversion_rate_pct DESC;
-
-
-
-
