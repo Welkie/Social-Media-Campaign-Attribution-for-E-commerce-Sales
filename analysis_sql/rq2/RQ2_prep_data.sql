@@ -5,7 +5,6 @@ USE DAP_Campaign_Attribution;
 /*Which attribution model best reflects the actual
 conversion behavior observed in the data?*/
 
-
 SELECT 
     User_ID,
     MAX(CAST(Conversion AS INT)) AS is_converted, 
@@ -14,6 +13,6 @@ SELECT
     MAX(CASE WHEN Channel = 'Search Ads' THEN 1 ELSE 0 END) AS touch_Search_Ads,
     MAX(CASE WHEN Channel = 'Display Ads' THEN 1 ELSE 0 END) AS touch_Display_Ads,
     MAX(CASE WHEN Channel = 'Direct Traffic' THEN 1 ELSE 0 END) AS touch_Direct_Traffic
-INTO User_Attribution_Features -- L?nh này s? t?o ra m?t b?ng m?i v?t lý l?u trong database
+INTO User_Attribution_Features -- This command creates a new physical table saved in the database
 FROM multi_touch_attribution_data
 GROUP BY User_ID;
