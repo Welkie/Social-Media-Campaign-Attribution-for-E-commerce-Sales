@@ -1,0 +1,7 @@
+P,Q,KL(P||Q)
+first_touch_pct,last_touch_pct,0.001316
+first_touch_pct,linear_pct,0.000472
+first_touch_pct,logit_adjusted_pct,0.010019
+last_touch_pct,linear_pct,0.000506
+last_touch_pct,logit_adjusted_pct,0.014252
+linear_pct,logit_adjusted_pct,0.01192

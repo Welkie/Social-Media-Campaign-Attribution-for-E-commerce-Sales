@@ -1,0 +1,27 @@
+{
+  "appName": "Journey Signal",
+  "scope": "Public research dashboard for multi-touch attribution, regression benchmark, Markov comparison, and budget simulation.",
+  "source": "Precomputed Python notebook outputs. The web app does not train models.",
+  "keyFacts": [
+    "The dataset has 10,000 touchpoints, 2,847 users, 2,381 converted users, and 6 channels.",
+    "Social Media linear attribution share is 16.7%.",
+    "Display Ads has the highest logistic-adjusted share at 21.99%; Social Media is 16.4%.",
+    "The channel_plus_length logistic model has AUC 0.7536 and McFadden pseudo-R2 0.196.",
+    "N_Touchpoints is strongly associated with conversion with odds ratio 1.9114 and p-value 0.",
+    "Display Ads is significant with odds ratio 1.9087 and p-value 0.0011. Email is significant with odds ratio 1.5488 and p-value 0.0279. Social Media is positive but marginal with odds ratio 1.4235 and p-value 0.0642.",
+    "S1 conversion-rate weighting improves simulated revenue by 99.70574419514742; S2 linear-attribution weighting improves simulated revenue by 82.71840586443432."
+  ],
+  "caveats": [
+    "Regression estimates association, not causation.",
+    "Simulation results are scenario comparisons under simplifying assumptions, not real revenue forecasts.",
+    "Channel identity alone is weak at row level; journey length is a major confounder.",
+    "The assistant must not invent numbers outside the provided context."
+  ],
+  "suggestedQuestions": [
+    "Why is Social Media not the strongest channel?",
+    "Which attribution model is closest to the regression benchmark?",
+    "What does the regression say about Display Ads?",
+    "Can we say Social Media caused conversions?",
+    "What is the limitation of the simulation?"
+  ]
+}
