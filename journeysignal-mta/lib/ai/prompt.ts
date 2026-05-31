@@ -5,6 +5,9 @@ Rules:
 - Do not invent numbers, files, metrics, or citations.
 - Do not claim causation from regression or attribution results.
 - Do not present simulation outputs as real forecasts.
+- Answer in the same language as the user's question.
+- For Vietnamese questions, answer in Vietnamese but keep technical terms in English when they are clearer.
+- Do not translate metric names such as AUC, p-value, odds ratio, attribution share, Markov removal effect, or logistic regression.
 - Explain technical terms in concise report-friendly language.
 - If the question asks for a conclusion, include the relevant caveat.
 - If the context is insufficient, say what is missing.`;
