@@ -1,0 +1,1000 @@
+{
+  "projectSummary": {
+    "touchpoints": 10000,
+    "users": 2847,
+    "convertedUsers": 2381,
+    "channels": 6,
+    "models": [
+      "First-Touch",
+      "Last-Touch",
+      "Linear",
+      "Logistic Regression",
+      "Markov",
+      "Budget Simulation"
+    ],
+    "researchQuestions": [
+      {
+        "id": "RQ1",
+        "title": "Social Media contribution",
+        "question": "How much does Social Media contribute to conversion compared with the other five channels?"
+      },
+      {
+        "id": "RQ2",
+        "title": "Attribution model fit",
+        "question": "Which attribution model best reflects the actual conversion behavior observed in the data?"
+      },
+      {
+        "id": "RQ3",
+        "title": "Budget simulation",
+        "question": "How much can simulated conversions and revenue improve after reallocating budget by attribution signals?"
+      }
+    ]
+  },
+  "attribution": {
+    "shares": [
+      {
+        "channel": "Direct Traffic",
+        "firstTouchPct": 17.26,
+        "lastTouchPct": 17.85,
+        "linearPct": 17.15
+      },
+      {
+        "channel": "Display Ads",
+        "firstTouchPct": 17.98,
+        "lastTouchPct": 16.84,
+        "linearPct": 17.1
+      },
+      {
+        "channel": "Referral",
+        "firstTouchPct": 17.14,
+        "lastTouchPct": 16.13,
+        "linearPct": 16.75
+      },
+      {
+        "channel": "Social Media",
+        "firstTouchPct": 16.34,
+        "lastTouchPct": 16.09,
+        "linearPct": 16.7
+      },
+      {
+        "channel": "Email",
+        "firstTouchPct": 15.71,
+        "lastTouchPct": 16.51,
+        "linearPct": 16.28
+      },
+      {
+        "channel": "Search Ads",
+        "firstTouchPct": 15.58,
+        "lastTouchPct": 16.59,
+        "linearPct": 16.02
+      }
+    ],
+    "conversionRates": [
+      {
+        "channel": "Email",
+        "touchpoints": 1654,
+        "conversionTouchpoints": 830,
+        "conversionRate": 0.501813784764208,
+        "conversionRatePct": 50.181378476420804
+      },
+      {
+        "channel": "Referral",
+        "touchpoints": 1685,
+        "conversionTouchpoints": 841,
+        "conversionRate": 0.49910979228486646,
+        "conversionRatePct": 49.910979228486646
+      },
+      {
+        "channel": "Display Ads",
+        "touchpoints": 1669,
+        "conversionTouchpoints": 828,
+        "conversionRate": 0.49610545236668663,
+        "conversionRatePct": 49.61054523666866
+      },
+      {
+        "channel": "Direct Traffic",
+        "touchpoints": 1721,
+        "conversionTouchpoints": 853,
+        "conversionRate": 0.49564206856478793,
+        "conversionRatePct": 49.56420685647879
+      },
+      {
+        "channel": "Social Media",
+        "touchpoints": 1662,
+        "conversionTouchpoints": 820,
+        "conversionRate": 0.49338146811071,
+        "conversionRatePct": 49.338146811071
+      },
+      {
+        "channel": "Search Ads",
+        "touchpoints": 1609,
+        "conversionTouchpoints": 772,
+        "conversionRate": 0.4798011187072716,
+        "conversionRatePct": 47.98011187072716
+      }
+    ],
+    "socialMediaSummary": [
+      {
+        "metric": "Social Media first-touch share (%)",
+        "value": 16.34
+      },
+      {
+        "metric": "Social Media last-touch share (%)",
+        "value": 16.09
+      },
+      {
+        "metric": "Social Media linear share (%)",
+        "value": 16.7
+      },
+      {
+        "metric": "Social Media first-touch rank",
+        "value": 4
+      },
+      {
+        "metric": "Social Media last-touch rank",
+        "value": 6
+      },
+      {
+        "metric": "Social Media linear rank",
+        "value": 4
+      },
+      {
+        "metric": "Top first-touch channel",
+        "value": "Display Ads"
+      },
+      {
+        "metric": "Top last-touch channel",
+        "value": "Direct Traffic"
+      },
+      {
+        "metric": "Top linear channel",
+        "value": "Direct Traffic"
+      }
+    ]
+  },
+  "regression": {
+    "modelMetrics": [
+      {
+        "model": "row_channel",
+        "nTrain": 7000,
+        "nTest": 3000,
+        "positiveRate": 0.4944,
+        "pseudoR2Mcfadden": 0.0002,
+        "aucTest": 0.4902
+      },
+      {
+        "model": "user_any_channel",
+        "nTrain": 1992,
+        "nTest": 855,
+        "positiveRate": 0.8363,
+        "pseudoR2Mcfadden": 0.172,
+        "aucTest": 0.7215
+      },
+      {
+        "model": "journey_length_only",
+        "nTrain": 1992,
+        "nTest": 855,
+        "positiveRate": 0.8363,
+        "pseudoR2Mcfadden": 0.1883,
+        "aucTest": 0.7549
+      },
+      {
+        "model": "channel_plus_length",
+        "nTrain": 1992,
+        "nTest": 855,
+        "positiveRate": 0.8363,
+        "pseudoR2Mcfadden": 0.196,
+        "aucTest": 0.7536
+      }
+    ],
+    "adjustedCoefficients": [
+      {
+        "predictor": "const",
+        "coefficient": -0.9742,
+        "oddsRatio": 0.3775,
+        "ciLow": 0.2725,
+        "ciHigh": 0.5229,
+        "pValue": 0
+      },
+      {
+        "predictor": "Channel_Direct Traffic",
+        "coefficient": 0.3047,
+        "oddsRatio": 1.3562,
+        "ciLow": 0.9326,
+        "ciHigh": 1.9722,
+        "pValue": 0.1108
+      },
+      {
+        "predictor": "Channel_Display Ads",
+        "coefficient": 0.6464,
+        "oddsRatio": 1.9087,
+        "ciLow": 1.2927,
+        "ciHigh": 2.8183,
+        "pValue": 0.0011
+      },
+      {
+        "predictor": "Channel_Email",
+        "coefficient": 0.4375,
+        "oddsRatio": 1.5488,
+        "ciLow": 1.0486,
+        "ciHigh": 2.2875,
+        "pValue": 0.0279
+      },
+      {
+        "predictor": "Channel_Referral",
+        "coefficient": 0.295,
+        "oddsRatio": 1.3431,
+        "ciLow": 0.9255,
+        "ciHigh": 1.9493,
+        "pValue": 0.1206
+      },
+      {
+        "predictor": "Channel_Search Ads",
+        "coefficient": 0.0957,
+        "oddsRatio": 1.1004,
+        "ciLow": 0.7571,
+        "ciHigh": 1.5993,
+        "pValue": 0.616
+      },
+      {
+        "predictor": "Channel_Social Media",
+        "coefficient": 0.3531,
+        "oddsRatio": 1.4235,
+        "ciLow": 0.9793,
+        "ciHigh": 2.0691,
+        "pValue": 0.0642
+      },
+      {
+        "predictor": "N_Touchpoints",
+        "coefficient": 0.6478,
+        "oddsRatio": 1.9114,
+        "ciLow": 1.5432,
+        "ciHigh": 2.3676,
+        "pValue": 0
+      }
+    ],
+    "adjustedChannelShare": [
+      {
+        "channel": "Display Ads",
+        "logitAdjustedSharePct": 21.99
+      },
+      {
+        "channel": "Email",
+        "logitAdjustedSharePct": 17.84
+      },
+      {
+        "channel": "Social Media",
+        "logitAdjustedSharePct": 16.4
+      },
+      {
+        "channel": "Direct Traffic",
+        "logitAdjustedSharePct": 15.62
+      },
+      {
+        "channel": "Referral",
+        "logitAdjustedSharePct": 15.47
+      },
+      {
+        "channel": "Search Ads",
+        "logitAdjustedSharePct": 12.68
+      }
+    ],
+    "spearmanVsLogit": [
+      {
+        "heuristicModel": "first_touch_pct",
+        "benchmark": "logit_adjusted_channel_share",
+        "spearmanRho": 0.4857,
+        "pValue": 0.3287
+      },
+      {
+        "heuristicModel": "last_touch_pct",
+        "benchmark": "logit_adjusted_channel_share",
+        "spearmanRho": 0.0857,
+        "pValue": 0.8717
+      },
+      {
+        "heuristicModel": "linear_pct",
+        "benchmark": "logit_adjusted_channel_share",
+        "spearmanRho": 0.3143,
+        "pValue": 0.5441
+      }
+    ],
+    "klDivergence": [
+      {
+        "p": "first_touch_pct",
+        "q": "last_touch_pct",
+        "kLPQ)": 0.001316
+      },
+      {
+        "p": "first_touch_pct",
+        "q": "linear_pct",
+        "kLPQ)": 0.000472
+      },
+      {
+        "p": "first_touch_pct",
+        "q": "logit_adjusted_pct",
+        "kLPQ)": 0.010019
+      },
+      {
+        "p": "last_touch_pct",
+        "q": "linear_pct",
+        "kLPQ)": 0.000506
+      },
+      {
+        "p": "last_touch_pct",
+        "q": "logit_adjusted_pct",
+        "kLPQ)": 0.014252
+      },
+      {
+        "p": "linear_pct",
+        "q": "logit_adjusted_pct",
+        "kLPQ)": 0.01192
+      }
+    ],
+    "chiSquare": [
+      {
+        "test": "channel_by_row_conversion",
+        "chiSquare": 1.922014,
+        "pValue": 0.859827,
+        "degreesOfFreedom": 5
+      }
+    ],
+    "interpretationNotes": [
+      {
+        "finding": "Row-level channel signal is weak",
+        "evidence": "row_channel AUC is near 0.50 and chi-square p-value is high"
+      },
+      {
+        "finding": "User-level prediction improves substantially",
+        "evidence": "any-channel exposure and journey length both predict user-level conversion"
+      },
+      {
+        "finding": "Journey length is a major confounder",
+        "evidence": "journey_length_only performs at least as well as user_any_channel"
+      },
+      {
+        "finding": "Adjusted logistic benchmark is conservative",
+        "evidence": "channel_plus_length is used for attribution-model comparison"
+      }
+    ]
+  },
+  "comparison": {
+    "modelComparison": [
+      {
+        "channel": "Direct Traffic",
+        "firstTouchPct": 17.26,
+        "lastTouchPct": 17.85,
+        "linearPct": 17.15,
+        "logitAdjustedPct": 15.62,
+        "markovPositiveRemovalPct": 0
+      },
+      {
+        "channel": "Display Ads",
+        "firstTouchPct": 17.98,
+        "lastTouchPct": 16.84,
+        "linearPct": 17.1,
+        "logitAdjustedPct": 21.99,
+        "markovPositiveRemovalPct": 76.05656613347392
+      },
+      {
+        "channel": "Referral",
+        "firstTouchPct": 17.14,
+        "lastTouchPct": 16.13,
+        "linearPct": 16.75,
+        "logitAdjustedPct": 15.47,
+        "markovPositiveRemovalPct": 23.943433866526075
+      },
+      {
+        "channel": "Social Media",
+        "firstTouchPct": 16.34,
+        "lastTouchPct": 16.09,
+        "linearPct": 16.7,
+        "logitAdjustedPct": 16.4,
+        "markovPositiveRemovalPct": 0
+      },
+      {
+        "channel": "Email",
+        "firstTouchPct": 15.71,
+        "lastTouchPct": 16.51,
+        "linearPct": 16.28,
+        "logitAdjustedPct": 17.84,
+        "markovPositiveRemovalPct": 0
+      },
+      {
+        "channel": "Search Ads",
+        "firstTouchPct": 15.58,
+        "lastTouchPct": 16.59,
+        "linearPct": 16.02,
+        "logitAdjustedPct": 12.68,
+        "markovPositiveRemovalPct": 0
+      }
+    ],
+    "removalEffect": [
+      {
+        "channel": "Display Ads",
+        "baselineConversionProbability": 0.8363189322093432,
+        "conversionProbabilityWithoutChannel": 0.8358713797893524,
+        "removalEffectAbs": 0.0004475524199907266,
+        "removalEffectPct": 0.05351456277671561,
+        "positiveRemovalEffect": 0.0004475524199907266,
+        "markovSharePct": 76.05656613347392
+      },
+      {
+        "channel": "Referral",
+        "baselineConversionProbability": 0.8363189322093432,
+        "conversionProbabilityWithoutChannel": 0.8361780378419713,
+        "removalEffectAbs": 0.00014089436737185768,
+        "removalEffectPct": 0.016846966144799615,
+        "positiveRemovalEffect": 0.00014089436737185768,
+        "markovSharePct": 23.943433866526075
+      },
+      {
+        "channel": "Social Media",
+        "baselineConversionProbability": 0.8363189322093432,
+        "conversionProbabilityWithoutChannel": 0.8363195937197194,
+        "removalEffectAbs": -6.615103762541708e-7,
+        "removalEffectPct": -0.00007909785977302075,
+        "positiveRemovalEffect": 0,
+        "markovSharePct": 0
+      },
+      {
+        "channel": "Direct Traffic",
+        "baselineConversionProbability": 0.8363189322093432,
+        "conversionProbabilityWithoutChannel": 0.8364293481724676,
+        "removalEffectAbs": -0.0001104159631244439,
+        "removalEffectPct": -0.013202614322355808,
+        "positiveRemovalEffect": 0,
+        "markovSharePct": 0
+      },
+      {
+        "channel": "Email",
+        "baselineConversionProbability": 0.8363189322093432,
+        "conversionProbabilityWithoutChannel": 0.8365059692871653,
+        "removalEffectAbs": -0.00018703707782208312,
+        "removalEffectPct": -0.022364324257012628,
+        "positiveRemovalEffect": 0,
+        "markovSharePct": 0
+      },
+      {
+        "channel": "Search Ads",
+        "baselineConversionProbability": 0.8363189322093432,
+        "conversionProbabilityWithoutChannel": 0.8365557188090524,
+        "removalEffectAbs": -0.00023678659970927107,
+        "removalEffectPct": -0.02831295461454409,
+        "positiveRemovalEffect": 0,
+        "markovSharePct": 0
+      }
+    ],
+    "markovAttributionShare": [
+      {
+        "channel": "Display Ads",
+        "markovSharePct": 76.05656613347392
+      },
+      {
+        "channel": "Referral",
+        "markovSharePct": 23.943433866526075
+      },
+      {
+        "channel": "Social Media",
+        "markovSharePct": 0
+      },
+      {
+        "channel": "Direct Traffic",
+        "markovSharePct": 0
+      },
+      {
+        "channel": "Email",
+        "markovSharePct": 0
+      },
+      {
+        "channel": "Search Ads",
+        "markovSharePct": 0
+      }
+    ],
+    "transitionMatrix": [
+      {
+        "channel": "START",
+        "sTART": 0,
+        "directTraffic": 0.17175974710221287,
+        "displayAds": 0.17281348788198103,
+        "email": 0.15806111696522657,
+        "referral": 0.17070600632244468,
+        "searchAds": 0.16192483315770986,
+        "socialMedia": 0.164734808570425,
+        "cONVERSION": 0,
+        "nULL": 0
+      },
+      {
+        "channel": "Direct Traffic",
+        "sTART": 0,
+        "directTraffic": 0.12667054038349795,
+        "displayAds": 0.11563044741429401,
+        "email": 0.11737361998837885,
+        "referral": 0.10923881464264962,
+        "searchAds": 0.11969785008715862,
+        "socialMedia": 0.11446833236490413,
+        "cONVERSION": 0.24694944799535154,
+        "nULL": 0.04997094712376525
+      },
+      {
+        "channel": "Display Ads",
+        "sTART": 0,
+        "directTraffic": 0.11503894547633313,
+        "displayAds": 0.1318154583582984,
+        "email": 0.12402636309167166,
+        "referral": 0.12402636309167166,
+        "searchAds": 0.11503894547633313,
+        "socialMedia": 0.10964649490713002,
+        "cONVERSION": 0.2402636309167166,
+        "nULL": 0.040143798681845415
+      },
+      {
+        "channel": "Email",
+        "sTART": 0,
+        "directTraffic": 0.11789600967351874,
+        "displayAds": 0.11487303506650544,
+        "email": 0.1185006045949214,
+        "referral": 0.11608222490931076,
+        "searchAds": 0.12817412333736397,
+        "socialMedia": 0.11729141475211609,
+        "cONVERSION": 0.23760580411124546,
+        "nULL": 0.049576783555018135
+      },
+      {
+        "channel": "Referral",
+        "sTART": 0,
+        "directTraffic": 0.1311572700296736,
+        "displayAds": 0.12700296735905045,
+        "email": 0.11513353115727003,
+        "referral": 0.11216617210682493,
+        "searchAds": 0.11394658753709198,
+        "socialMedia": 0.13056379821958458,
+        "cONVERSION": 0.22789317507418397,
+        "nULL": 0.042136498516320474
+      },
+      {
+        "channel": "Search Ads",
+        "sTART": 0,
+        "directTraffic": 0.12492231199502797,
+        "displayAds": 0.10441267868241144,
+        "email": 0.12243629583592293,
+        "referral": 0.12678682411435674,
+        "searchAds": 0.1019266625233064,
+        "socialMedia": 0.12119328775637042,
+        "cONVERSION": 0.24549409571162212,
+        "nULL": 0.052827843380981974
+      },
+      {
+        "channel": "Social Media",
+        "sTART": 0,
+        "directTraffic": 0.1233453670276775,
+        "displayAds": 0.11191335740072202,
+        "email": 0.12515042117930206,
+        "referral": 0.13176895306859207,
+        "searchAds": 0.1095066185318893,
+        "socialMedia": 0.12274368231046931,
+        "cONVERSION": 0.23044524669073405,
+        "nULL": 0.04512635379061372
+      },
+      {
+        "channel": "CONVERSION",
+        "sTART": 0,
+        "directTraffic": 0,
+        "displayAds": 0,
+        "email": 0,
+        "referral": 0,
+        "searchAds": 0,
+        "socialMedia": 0,
+        "cONVERSION": 1,
+        "nULL": 0
+      },
+      {
+        "channel": "NULL",
+        "sTART": 0,
+        "directTraffic": 0,
+        "displayAds": 0,
+        "email": 0,
+        "referral": 0,
+        "searchAds": 0,
+        "socialMedia": 0,
+        "cONVERSION": 0,
+        "nULL": 1
+      }
+    ]
+  },
+  "simulation": {
+    "results": [
+      {
+        "scenario": "S0_equal",
+        "conversions": 4943.089474664217,
+        "revenue": 494308.9474664217,
+        "deltaConversions": 0,
+        "deltaRevenue": 0,
+        "deltaConvPct": 0,
+        "deltaRevPct": 0
+      },
+      {
+        "scenario": "S1_conversion_rate",
+        "conversions": 4944.086532106169,
+        "revenue": 494408.65321061685,
+        "deltaConversions": 0.9970574419521654,
+        "deltaRevenue": 99.70574419514742,
+        "deltaConvPct": 0.020170734255620104,
+        "deltaRevPct": 0.0201707342555979
+      },
+      {
+        "scenario": "S2_linear_attribution",
+        "conversions": 4943.916658722862,
+        "revenue": 494391.66587228613,
+        "deltaConversions": 0.8271840586448889,
+        "deltaRevenue": 82.71840586443432,
+        "deltaConvPct": 0.0167341510382224,
+        "deltaRevPct": 0.0167341510382224
+      }
+    ],
+    "budgetWeights": [
+      {
+        "channel": "Direct Traffic",
+        "s0Equal": 0.16666666666666666,
+        "s1ConversionRate": 0.16711615650670802,
+        "s2LinearAttribution": 0.17149999999999999
+      },
+      {
+        "channel": "Display Ads",
+        "s0Equal": 0.16666666666666666,
+        "s1ConversionRate": 0.16727239610958317,
+        "s2LinearAttribution": 0.171
+      },
+      {
+        "channel": "Email",
+        "s0Equal": 0.16666666666666666,
+        "s1ConversionRate": 0.16919708053578378,
+        "s2LinearAttribution": 0.1628
+      },
+      {
+        "channel": "Referral",
+        "s0Equal": 0.16666666666666666,
+        "s1ConversionRate": 0.16828537255328926,
+        "s2LinearAttribution": 0.1675
+      },
+      {
+        "channel": "Search Ads",
+        "s0Equal": 0.16666666666666666,
+        "s1ConversionRate": 0.16177504681585947,
+        "s2LinearAttribution": 0.1602
+      },
+      {
+        "channel": "Social Media",
+        "s0Equal": 0.16666666666666666,
+        "s1ConversionRate": 0.16635394747877633,
+        "s2LinearAttribution": 0.16699999999999998
+      }
+    ],
+    "roiByChannel": [
+      {
+        "channel": "Direct Traffic",
+        "s0Equal": 3.9564206856478785,
+        "s1ConversionRate": 3.9564206856478785,
+        "s2LinearAttribution": 3.9564206856478785
+      },
+      {
+        "channel": "Display Ads",
+        "s0Equal": 3.961054523666866,
+        "s1ConversionRate": 3.961054523666866,
+        "s2LinearAttribution": 3.961054523666866
+      },
+      {
+        "channel": "Email",
+        "s0Equal": 4.01813784764208,
+        "s1ConversionRate": 4.01813784764208,
+        "s2LinearAttribution": 4.0181378476420795
+      },
+      {
+        "channel": "Referral",
+        "s0Equal": 3.991097922848664,
+        "s1ConversionRate": 3.991097922848664,
+        "s2LinearAttribution": 3.991097922848664
+      },
+      {
+        "channel": "Search Ads",
+        "s0Equal": 3.7980111870727162,
+        "s1ConversionRate": 3.7980111870727162,
+        "s2LinearAttribution": 3.7980111870727153
+      },
+      {
+        "channel": "Social Media",
+        "s0Equal": 3.9338146811071004,
+        "s1ConversionRate": 3.9338146811070995,
+        "s2LinearAttribution": 3.9338146811071004
+      }
+    ],
+    "sensitivity": [
+      {
+        "scenario": "S0_equal",
+        "revenueFactor": 0.8,
+        "revenuePerConversion": 80,
+        "conversions": 4943.089474664217,
+        "revenue": 395447.15797313733,
+        "deltaRevPctVsS0": 0
+      },
+      {
+        "scenario": "S1_conversion_rate",
+        "revenueFactor": 0.8,
+        "revenuePerConversion": 80,
+        "conversions": 4944.086532106169,
+        "revenue": 395526.9225684935,
+        "deltaRevPctVsS0": 0.020170734255620104
+      },
+      {
+        "scenario": "S2_linear_attribution",
+        "revenueFactor": 0.8,
+        "revenuePerConversion": 80,
+        "conversions": 4943.916658722862,
+        "revenue": 395513.33269782894,
+        "deltaRevPctVsS0": 0.0167341510382224
+      },
+      {
+        "scenario": "S0_equal",
+        "revenueFactor": 1,
+        "revenuePerConversion": 100,
+        "conversions": 4943.089474664217,
+        "revenue": 494308.9474664217,
+        "deltaRevPctVsS0": 0
+      },
+      {
+        "scenario": "S1_conversion_rate",
+        "revenueFactor": 1,
+        "revenuePerConversion": 100,
+        "conversions": 4944.086532106169,
+        "revenue": 494408.65321061685,
+        "deltaRevPctVsS0": 0.0201707342555979
+      },
+      {
+        "scenario": "S2_linear_attribution",
+        "revenueFactor": 1,
+        "revenuePerConversion": 100,
+        "conversions": 4943.916658722862,
+        "revenue": 494391.66587228613,
+        "deltaRevPctVsS0": 0.0167341510382224
+      },
+      {
+        "scenario": "S0_equal",
+        "revenueFactor": 1.2,
+        "revenuePerConversion": 120,
+        "conversions": 4943.089474664217,
+        "revenue": 593170.7369597061,
+        "deltaRevPctVsS0": 0
+      },
+      {
+        "scenario": "S1_conversion_rate",
+        "revenueFactor": 1.2,
+        "revenuePerConversion": 120,
+        "conversions": 4944.086532106169,
+        "revenue": 593290.3838527403,
+        "deltaRevPctVsS0": 0.020170734255620104
+      },
+      {
+        "scenario": "S2_linear_attribution",
+        "revenueFactor": 1.2,
+        "revenuePerConversion": 120,
+        "conversions": 4943.916658722862,
+        "revenue": 593269.9990467435,
+        "deltaRevPctVsS0": 0.0167341510382224
+      }
+    ],
+    "assumptions": [
+      {
+        "parameter": "revenue_per_conversion",
+        "value": 100
+      },
+      {
+        "parameter": "total_budget",
+        "value": 100000
+      },
+      {
+        "parameter": "total_touchpoints",
+        "value": 10000
+      },
+      {
+        "parameter": "cost_per_touch",
+        "value": 10
+      },
+      {
+        "parameter": "sensitivity_factors",
+        "value": "[0.8, 1.0, 1.2]"
+      },
+      {
+        "parameter": "random_seed",
+        "value": 42
+      }
+    ],
+    "perChannel": {
+      "s0Equal": [
+        {
+          "index0": "Direct Traffic",
+          "budgetWeight": 0.16666666666666666,
+          "spend": 16666.666666666664,
+          "simulatedTouchpoints": 1666.6666666666665,
+          "conversionRate": 0.4956420685647879,
+          "simulatedConversions": 826.0701142746464,
+          "simulatedRevenue": 82607.01142746463,
+          "roi": 3.9564206856478785
+        },
+        {
+          "index0": "Display Ads",
+          "budgetWeight": 0.16666666666666666,
+          "spend": 16666.666666666664,
+          "simulatedTouchpoints": 1666.6666666666665,
+          "conversionRate": 0.4961054523666866,
+          "simulatedConversions": 826.8424206111442,
+          "simulatedRevenue": 82684.24206111442,
+          "roi": 3.961054523666866
+        },
+        {
+          "index0": "Email",
+          "budgetWeight": 0.16666666666666666,
+          "spend": 16666.666666666664,
+          "simulatedTouchpoints": 1666.6666666666665,
+          "conversionRate": 0.501813784764208,
+          "simulatedConversions": 836.3563079403466,
+          "simulatedRevenue": 83635.63079403466,
+          "roi": 4.01813784764208
+        },
+        {
+          "index0": "Referral",
+          "budgetWeight": 0.16666666666666666,
+          "spend": 16666.666666666664,
+          "simulatedTouchpoints": 1666.6666666666665,
+          "conversionRate": 0.4991097922848664,
+          "simulatedConversions": 831.8496538081106,
+          "simulatedRevenue": 83184.96538081106,
+          "roi": 3.991097922848664
+        },
+        {
+          "index0": "Search Ads",
+          "budgetWeight": 0.16666666666666666,
+          "spend": 16666.666666666664,
+          "simulatedTouchpoints": 1666.6666666666665,
+          "conversionRate": 0.4798011187072716,
+          "simulatedConversions": 799.6685311787859,
+          "simulatedRevenue": 79966.85311787859,
+          "roi": 3.7980111870727162
+        },
+        {
+          "index0": "Social Media",
+          "budgetWeight": 0.16666666666666666,
+          "spend": 16666.666666666664,
+          "simulatedTouchpoints": 1666.6666666666665,
+          "conversionRate": 0.49338146811071,
+          "simulatedConversions": 822.3024468511833,
+          "simulatedRevenue": 82230.24468511833,
+          "roi": 3.9338146811071004
+        }
+      ],
+      "s1ConversionRate": [
+        {
+          "channel": "Direct Traffic",
+          "budgetWeight": 0.16711615650670802,
+          "spend": 16711.615650670803,
+          "simulatedTouchpoints": 1671.1615650670803,
+          "conversionRate": 0.4956420685647879,
+          "simulatedConversions": 828.2979750158161,
+          "simulatedRevenue": 82829.7975015816,
+          "roi": 3.9564206856478785
+        },
+        {
+          "channel": "Display Ads",
+          "budgetWeight": 0.16727239610958317,
+          "spend": 16727.239610958317,
+          "simulatedTouchpoints": 1672.7239610958318,
+          "conversionRate": 0.4961054523666866,
+          "simulatedConversions": 829.8474774040435,
+          "simulatedRevenue": 82984.74774040435,
+          "roi": 3.961054523666866
+        },
+        {
+          "channel": "Email",
+          "budgetWeight": 0.16919708053578378,
+          "spend": 16919.70805357838,
+          "simulatedTouchpoints": 1691.970805357838,
+          "conversionRate": 0.501813784764208,
+          "simulatedConversions": 849.0542735471618,
+          "simulatedRevenue": 84905.42735471617,
+          "roi": 4.01813784764208
+        },
+        {
+          "channel": "Referral",
+          "budgetWeight": 0.16828537255328926,
+          "spend": 16828.537255328927,
+          "simulatedTouchpoints": 1682.8537255328927,
+          "conversionRate": 0.4991097922848664,
+          "simulatedConversions": 839.9287733965357,
+          "simulatedRevenue": 83992.87733965357,
+          "roi": 3.991097922848664
+        },
+        {
+          "channel": "Search Ads",
+          "budgetWeight": 0.16177504681585947,
+          "spend": 16177.504681585948,
+          "simulatedTouchpoints": 1617.7504681585947,
+          "conversionRate": 0.4798011187072716,
+          "simulatedConversions": 776.1984844117061,
+          "simulatedRevenue": 77619.84844117062,
+          "roi": 3.7980111870727162
+        },
+        {
+          "channel": "Social Media",
+          "budgetWeight": 0.16635394747877633,
+          "spend": 16635.39474787763,
+          "simulatedTouchpoints": 1663.539474787763,
+          "conversionRate": 0.49338146811071,
+          "simulatedConversions": 820.759548330906,
+          "simulatedRevenue": 82075.9548330906,
+          "roi": 3.9338146811070995
+        }
+      ],
+      "s2LinearAttribution": [
+        {
+          "index0": "Direct Traffic",
+          "budgetWeight": 0.17149999999999999,
+          "spend": 17150,
+          "simulatedTouchpoints": 1715,
+          "conversionRate": 0.4956420685647879,
+          "simulatedConversions": 850.0261475886113,
+          "simulatedRevenue": 85002.61475886112,
+          "roi": 3.9564206856478785
+        },
+        {
+          "index0": "Display Ads",
+          "budgetWeight": 0.171,
+          "spend": 17100,
+          "simulatedTouchpoints": 1710,
+          "conversionRate": 0.4961054523666866,
+          "simulatedConversions": 848.340323547034,
+          "simulatedRevenue": 84834.0323547034,
+          "roi": 3.961054523666866
+        },
+        {
+          "index0": "Email",
+          "budgetWeight": 0.1628,
+          "spend": 16280,
+          "simulatedTouchpoints": 1628,
+          "conversionRate": 0.501813784764208,
+          "simulatedConversions": 816.9528415961306,
+          "simulatedRevenue": 81695.28415961306,
+          "roi": 4.0181378476420795
+        },
+        {
+          "index0": "Referral",
+          "budgetWeight": 0.1675,
+          "spend": 16750,
+          "simulatedTouchpoints": 1675,
+          "conversionRate": 0.4991097922848664,
+          "simulatedConversions": 836.0089020771512,
+          "simulatedRevenue": 83600.89020771513,
+          "roi": 3.991097922848664
+        },
+        {
+          "index0": "Search Ads",
+          "budgetWeight": 0.1602,
+          "spend": 16020,
+          "simulatedTouchpoints": 1602,
+          "conversionRate": 0.4798011187072716,
+          "simulatedConversions": 768.6413921690491,
+          "simulatedRevenue": 76864.1392169049,
+          "roi": 3.7980111870727153
+        },
+        {
+          "index0": "Social Media",
+          "budgetWeight": 0.16699999999999998,
+          "spend": 16699.999999999996,
+          "simulatedTouchpoints": 1669.9999999999995,
+          "conversionRate": 0.49338146811071,
+          "simulatedConversions": 823.9470517448855,
+          "simulatedRevenue": 82394.70517448855,
+          "roi": 3.9338146811071004
+        }
+      ]
+    }
+  }
+}

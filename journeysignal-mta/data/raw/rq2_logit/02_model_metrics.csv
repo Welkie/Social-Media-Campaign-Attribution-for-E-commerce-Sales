@@ -1,0 +1,5 @@
+model,n_train,n_test,positive_rate,pseudo_r2_mcfadden,auc_test
+row_channel,7000,3000,0.4944,0.0002,0.4902
+user_any_channel,1992,855,0.8363,0.172,0.7215
+journey_length_only,1992,855,0.8363,0.1883,0.7549
+channel_plus_length,1992,855,0.8363,0.196,0.7536
