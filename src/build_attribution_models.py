@@ -19,7 +19,7 @@ np.random.seed(RANDOM_SEED)
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 DATA_DIR = PROJECT_ROOT / "data_preparation" / "processed"
-OUTPUT_DIR = PROJECT_ROOT / "outputs" / "attribution"
+OUTPUT_DIR = PROJECT_ROOT / "outputs" / "attribution model"
 
 REQUIRED_FILES = ["data_touchpoints.csv", "data_journeys.csv", "data_encoded.csv"]
 
@@ -88,6 +88,11 @@ def run_rq2_logit(df_enc, df_jr, attribution_base):
     print("Running RQ2: Logistic Regression...")
     channel_cols = [col for col in df_enc.columns if col.startswith("Channel_")]
     
+    # Row-level model (row_channel)
+    row_y = (df_enc["Conversion"] == "Yes")
+    # Drop first column to avoid dummy variable trap
+    fitted_row, metrics_row = fit_logit("row_channel", df_enc[channel_cols[1:]], row_y)
+    
     df_user = (
         df_enc.groupby("User ID")[channel_cols]
         .max()
@@ -96,9 +101,13 @@ def run_rq2_logit(df_enc, df_jr, attribution_base):
     )
 
     # Main Benchmark Model: channel + length
-    model_obj, metrics = fit_logit("channel_plus_length", df_user[channel_cols + ["N_Touchpoints"]], df_user["Converted"])
+    model_obj, metrics_user = fit_logit("channel_plus_length", df_user[channel_cols + ["N_Touchpoints"]], df_user["Converted"])
     
-    # Adjusted Coefficients
+    # Consolidated Metrics
+    model_metrics = pd.DataFrame([metrics_row, metrics_user]).round(4)
+    model_metrics.to_csv(OUTPUT_DIR / "02_model_metrics.csv", index=False)
+
+    # Adjusted Coefficients for User-level model
     conf = model_obj.conf_int()
     conf.columns = ["ci_low", "ci_high"]
     adjusted_coefficients = pd.DataFrame({
